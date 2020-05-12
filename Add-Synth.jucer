@@ -5,6 +5,10 @@
               pluginManufacturer="CMLS Group 18">
   <MAINGROUP id="rLU8mT" name="Add-Synth">
     <GROUP id="{BC37A9CA-B5E8-EF0B-3423-D369684DB0C6}" name="Source">
+      <FILE id="vMRZ3a" name="Synth.cpp" compile="1" resource="0" file="Source/Synth.cpp"/>
+      <FILE id="lgUyjY" name="Synth.h" compile="0" resource="0" file="Source/Synth.h"/>
+      <FILE id="tv8IZM" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
+      <FILE id="vTS5Rm" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
       <FILE id="ZoZs47" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="avjKPG" name="PluginProcessor.h" compile="0" resource="0"

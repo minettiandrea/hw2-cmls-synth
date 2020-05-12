@@ -97,6 +97,9 @@ void AddsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
+    //Initialize all the oscillators
+    synth.initialize(sampleRate);
 }
 
 void AddsynthAudioProcessor::releaseResources()
@@ -146,6 +149,22 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
+    
+    //MIDI messages managment
+    MidiMessage m;
+    int time;
+    for (MidiBuffer::Iterator i(midiMessages); i.getNextEvent(m, time);) {
+        if (m.isNoteOn()) {
+            synth.startNote(m.getMidiNoteInHertz(m.getNoteNumber())/2);
+        }
+        else if (m.isNoteOff()) {
+            synth.stopNote();
+        }
+    }
+    
+    //Process the sound
+    synth.process(buffer);
+   
     // Make sure to reset the state if your inner loop is processing
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
