@@ -17,9 +17,9 @@ public:
 	void setAmplitude(double value);
 	void setPhase(double value);
 	void setSampleRate(double sr);
-	float getFrequency();
-	float getAmplitude();
-	float getPhase();
+	double getFrequency();
+	double getAmplitude();
+	double getPhase();
 	double getBlockSineWave();
 
 private:
