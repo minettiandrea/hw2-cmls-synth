@@ -59,7 +59,6 @@ public:
 private:
     Synth synth;
 
-    double lastSampleRate;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessor)
 };

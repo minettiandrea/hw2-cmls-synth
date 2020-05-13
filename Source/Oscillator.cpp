@@ -34,17 +34,17 @@ void Oscillator::setSampleRate(double sr) {
 	sample_rate = sr;
 }
 
-float Oscillator::getFrequency()
+double Oscillator::getFrequency()
 {
 	return frequency;
 }
 
-float Oscillator::getAmplitude()
+double Oscillator::getAmplitude()
 {
 	return amplitude;
 }
 
-float Oscillator::getPhase()
+double Oscillator::getPhase()
 {
 	return phase;
 }

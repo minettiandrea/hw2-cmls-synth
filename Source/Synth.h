@@ -14,14 +14,15 @@
 
 class Synth {
 public:
-    Oscillator getMasterOsc();
-    Oscillator* getSlaveOsc();
+    Oscillator getMainOsc();
+    Oscillator* getSecondaryOsc();
     void initialize(double sampleRate);
     void process(AudioBuffer<float>& buffer);
     void startNote(double freq);
     void stopNote();
 
 private:
-    Oscillator masterOsc;
-    Oscillator slaveOsc[3];
+    Oscillator mainOsc;
+    Oscillator secondaryOsc[3];
+    double outputGain;
 };

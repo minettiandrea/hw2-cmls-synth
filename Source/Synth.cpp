@@ -10,29 +10,29 @@
 
 #include "Synth.h"
 
-Oscillator Synth::getMasterOsc()
+Oscillator Synth::getMainOsc()
 {
-	return masterOsc;
+	return mainOsc;
 }
 
-Oscillator* Synth::getSlaveOsc()
+Oscillator* Synth::getSecondaryOsc()
 {
-    return slaveOsc;
+    return secondaryOsc;
 }
 
 //Initialize all oscillators with standard values and setting the sample rate
 void Synth::initialize(double sr)
 {
-    masterOsc.setAmplitude(0);
-    masterOsc.setFrequency(440);
-    masterOsc.setPhase(0);
-    masterOsc.setSampleRate(sr);
+    mainOsc.setAmplitude(0);
+    mainOsc.setFrequency(440);
+    mainOsc.setPhase(0);
+    mainOsc.setSampleRate(sr);
 
     for (int i = 0; i < 3; i++) {
-        slaveOsc[i].setAmplitude(0);
-        slaveOsc[i].setFrequency(440);
-        slaveOsc[i].setPhase(0);
-        slaveOsc[i].setSampleRate(sr);
+        secondaryOsc[i].setAmplitude(0);
+        secondaryOsc[i].setFrequency(440);
+        secondaryOsc[i].setPhase(0);
+        secondaryOsc[i].setSampleRate(sr);
     }
 
 }
@@ -44,7 +44,7 @@ void Synth::process(AudioBuffer<float>& buffer)
     float* channelDataR = buffer.getWritePointer(1);
 
     for (int i = 0; i < buffer.getNumSamples(); ++i) {
-        channelDataL[i] = masterOsc.getBlockSineWave();     //to play the slave oscillators just add their getBlockSineWave() return arguments
+        channelDataL[i] = mainOsc.getBlockSineWave();     //to play the slave oscillators just add their getBlockSineWave() return arguments
         channelDataR[i] = channelDataL[i];
     }
 }
@@ -52,14 +52,14 @@ void Synth::process(AudioBuffer<float>& buffer)
 //Set values of the played note
 void Synth::startNote(double freq)
 {
-    masterOsc.setAmplitude(1);
-    masterOsc.setFrequency(freq);
+    mainOsc.setAmplitude(1);
+    mainOsc.setFrequency(freq);
     //set the frequency for the slave oscillators and amplitude to 1
 
 }
 
 void Synth::stopNote()
 {
-    masterOsc.setAmplitude(0);
+    mainOsc.setAmplitude(0);
     //same for slave oscillators
 }
