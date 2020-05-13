@@ -98,8 +98,7 @@ void AddsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     
-    //Initialize all the oscillators
-    synth.initialize(sampleRate);
+    synth.initialize(sampleRate);       //Initialize all the oscillators with f=440 and gain=0.5
 }
 
 void AddsynthAudioProcessor::releaseResources()

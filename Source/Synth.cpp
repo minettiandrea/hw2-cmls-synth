@@ -20,21 +20,35 @@ Oscillator* Synth::getSecondaryOsc()
     return secondaryOsc;
 }
 
-//Initialize all oscillators with standard values and setting the sample rate
-void Synth::initialize(double sr)
+double Synth::getOutputGain()
 {
-    mainOsc.setAmplitude(0);
+	return outputGain;
+}
+
+void Synth::setOutputGain(double gainValue)
+{
+    outputGain = gainValue;
+}
+
+//Initialize all oscillators with frequency 440 and gain 1 and setting the sample rate.
+//Set the main output volume at 0.5
+void Synth::initialize(double sampleRate)
+{
+    mainOsc.stop();
     mainOsc.setFrequency(440);
     mainOsc.setPhase(0);
-    mainOsc.setSampleRate(sr);
+    mainOsc.setSampleRate(sampleRate);
+    mainOsc.setGain(1);
 
     for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].setAmplitude(0);
+        secondaryOsc[i].stop();
         secondaryOsc[i].setFrequency(440);
         secondaryOsc[i].setPhase(0);
-        secondaryOsc[i].setSampleRate(sr);
+        secondaryOsc[i].setSampleRate(sampleRate);
+        secondaryOsc[i].setGain(1);
     }
 
+    outputGain = 0.5;
 }
 
 //Process the sound for all the samples in buffer
@@ -44,7 +58,7 @@ void Synth::process(AudioBuffer<float>& buffer)
     float* channelDataR = buffer.getWritePointer(1);
 
     for (int i = 0; i < buffer.getNumSamples(); ++i) {
-        channelDataL[i] = mainOsc.getBlockSineWave();     //to play the slave oscillators just add their getBlockSineWave() return arguments
+        channelDataL[i] = outputGain*(mainOsc.getBlockSineWave());     //to play the secondary oscillators just add their getBlockSineWave() return arguments
         channelDataR[i] = channelDataL[i];
     }
 }
@@ -52,14 +66,14 @@ void Synth::process(AudioBuffer<float>& buffer)
 //Set values of the played note
 void Synth::startNote(double freq)
 {
-    mainOsc.setAmplitude(1);
+    mainOsc.play();
     mainOsc.setFrequency(freq);
-    //set the frequency for the slave oscillators and amplitude to 1
+    //set the frequency for the secondary oscillators and call play()
 
 }
 
 void Synth::stopNote()
 {
-    mainOsc.setAmplitude(0);
-    //same for slave oscillators
+    mainOsc.stop();
+    //same for secondary oscillators
 }

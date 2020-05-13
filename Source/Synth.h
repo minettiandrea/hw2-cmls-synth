@@ -16,6 +16,8 @@ class Synth {
 public:
     Oscillator getMainOsc();
     Oscillator* getSecondaryOsc();
+    double getOutputGain();
+    void setOutputGain(double gainValue);
     void initialize(double sampleRate);
     void process(AudioBuffer<float>& buffer);
     void startNote(double freq);
@@ -24,5 +26,5 @@ public:
 private:
     Oscillator mainOsc;
     Oscillator secondaryOsc[3];
-    double outputGain;
+    double outputGain;          //Main output volume controlled by the GUI. Can be any value in the range 0:1
 };

@@ -8,40 +8,32 @@
   ==============================================================================
 */
 
+#define _USE_MATH_DEFINES
 #include "Oscillator.h"
 #include <cmath>
 
-#ifndef M_PI
-#define M_PI (3.14159265)
-#endif
-
-void Oscillator::setFrequency(double value)
+void Oscillator::setFrequency(double frequencyValue)
 {
-	frequency = value;
+	frequency = frequencyValue;
 }
 
-void Oscillator::setAmplitude(double value)
+void Oscillator::setPhase(double phaseValue)
 {
-	amplitude = value;
+	phase = phaseValue;
 }
 
-void Oscillator::setPhase(double value)
-{
-	phase = value;
+void Oscillator::setSampleRate(double sampleRateValue) {
+	sampleRate = sampleRateValue;
 }
 
-void Oscillator::setSampleRate(double sr) {
-	sample_rate = sr;
+void Oscillator::setGain(double gainValue)
+{
+	gain = gainValue;
 }
 
 double Oscillator::getFrequency()
 {
 	return frequency;
-}
-
-double Oscillator::getAmplitude()
-{
-	return amplitude;
 }
 
 double Oscillator::getPhase()
@@ -52,12 +44,27 @@ double Oscillator::getPhase()
 //Return the sine wave (gets called for each sample)
 double Oscillator::getBlockSineWave(){
 
-	double wave = amplitude*(double)sin((double)phase);
+	double wave = gain*amplitude*(double)sin((double)phase);
 
-	phase += (double)(M_PI * 2. * (frequency / sample_rate));
+	phase += (double)(M_PI * 2. * (frequency / sampleRate));
 	if (phase > M_PI * 2.) phase -= M_PI * 2.;
 
 	return wave;
+}
+
+double Oscillator::getGain()
+{
+	return gain;
+}
+
+void Oscillator::play()
+{
+	amplitude = 0.5;
+}
+
+void Oscillator::stop()
+{
+	amplitude = 0;
 }
 
 
