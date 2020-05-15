@@ -16,7 +16,7 @@
 //==============================================================================
 /**
 */
-class AddsynthAudioProcessorEditor  : public AudioProcessorEditor
+class AddsynthAudioProcessorEditor  : public AudioProcessorEditor, private Slider::Listener
 {
 public:
     AddsynthAudioProcessorEditor (AddsynthAudioProcessor&);
@@ -30,6 +30,13 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     AddsynthAudioProcessor& processor;
+
+    Slider outputGain;
+    Label outputGainLabel;
+    Slider oscGains[4];
+    Label oscGainsLabels[4];
+
+    void sliderValueChanged(Slider* slider) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessorEditor)
 };

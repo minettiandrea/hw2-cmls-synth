@@ -10,9 +10,9 @@
 
 #include "Synth.h"
 
-Oscillator Synth::getMainOsc()
+Oscillator* Synth::getMainOsc()
 {
-	return mainOsc;
+	return &mainOsc;
 }
 
 Oscillator* Synth::getSecondaryOsc()
@@ -30,22 +30,17 @@ void Synth::setOutputGain(double gainValue)
     outputGain = gainValue;
 }
 
-//Initialize all oscillators with frequency 440 and gain 1 and setting the sample rate.
-//Set the main output volume at 0.5
+//Initialize all oscillators: 
+//Frequency: main oscillator with 440 and the secondaries with multiple integers of 440
+//Gain: 1
+//Envelope: 0.1, 0.1, 1, 0.2
+//Output Gain: 0.5
 void Synth::initialize(double sampleRate)
 {
-    mainOsc.stop();
-    mainOsc.setFrequency(440);
-    mainOsc.setPhase(0);
-    mainOsc.setSampleRate(sampleRate);
-    mainOsc.setGain(1);
+    mainOsc.init(sampleRate, 440);
 
     for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].stop();
-        secondaryOsc[i].setFrequency(440);
-        secondaryOsc[i].setPhase(0);
-        secondaryOsc[i].setSampleRate(sampleRate);
-        secondaryOsc[i].setGain(1);
+        secondaryOsc[i].init(sampleRate, (i + 2) * 440);
     }
 
     outputGain = 0.5;
@@ -58,7 +53,7 @@ void Synth::process(AudioBuffer<float>& buffer)
     float* channelDataR = buffer.getWritePointer(1);
 
     for (int i = 0; i < buffer.getNumSamples(); ++i) {
-        channelDataL[i] = outputGain*(mainOsc.getBlockSineWave());     //to play the secondary oscillators just add their getBlockSineWave() return arguments
+        channelDataL[i] = outputGain*(mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
         channelDataR[i] = channelDataL[i];
     }
 }
@@ -66,14 +61,15 @@ void Synth::process(AudioBuffer<float>& buffer)
 //Set values of the played note
 void Synth::startNote(double freq)
 {
-    mainOsc.play();
-    mainOsc.setFrequency(freq);
-    //set the frequency for the secondary oscillators and call play()
-
+    mainOsc.play(freq);
+    for (int i = 0; i < 3; i++) {
+        secondaryOsc[i].play(double(i + 2) * freq);
+    }
 }
 
 void Synth::stopNote()
 {
     mainOsc.stop();
-    //same for secondary oscillators
-}
+    for (int i = 0; i < 3; i++) {
+        secondaryOsc[i].stop();
+    }}

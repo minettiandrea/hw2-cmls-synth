@@ -98,7 +98,7 @@ void AddsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     
-    synth.initialize(sampleRate);       //Initialize all the oscillators with f=440 and gain=0.5
+    synth.initialize(sampleRate);       //Initialize all the oscillators with f=440 and gain=1 and set the main gain at 0.5
 }
 
 void AddsynthAudioProcessor::releaseResources()
@@ -199,6 +199,22 @@ void AddsynthAudioProcessor::setStateInformation (const void* data, int sizeInBy
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+//======================== CUSTOM FUNCTIONS ===============================
+void AddsynthAudioProcessor::setOutputGain(double gainValue)
+{
+    synth.setOutputGain(gainValue);
+}
+
+void AddsynthAudioProcessor::setMainOscGain(double gainValue)
+{
+    synth.getMainOsc()->setGain(gainValue);
+}
+
+void AddsynthAudioProcessor::setSecondaryOscGains(int oscIndex, double gainValue)
+{
+    synth.getSecondaryOsc()[oscIndex].setGain(gainValue);
 }
 
 //==============================================================================

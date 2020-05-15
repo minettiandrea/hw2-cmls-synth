@@ -9,12 +9,11 @@
 */
 
 #pragma once
-#include <JuceHeader.h>
 #include "Oscillator.h"
 
 class Synth {
 public:
-    Oscillator getMainOsc();
+    Oscillator* getMainOsc();
     Oscillator* getSecondaryOsc();
     double getOutputGain();
     void setOutputGain(double gainValue);

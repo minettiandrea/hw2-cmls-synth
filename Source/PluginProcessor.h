@@ -56,6 +56,11 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //======================= CUSTOM FUNCTIONS ======================================
+    void setOutputGain(double gainValue);
+    void setMainOscGain(double gainValue);
+    void setSecondaryOscGains(int oscIndex, double gainValue);
+
 private:
     Synth synth;
 

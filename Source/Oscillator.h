@@ -9,7 +9,7 @@
 */
 
 #pragma once
-
+#include <JuceHeader.h>
 
 class Oscillator {
 public:
@@ -17,12 +17,14 @@ public:
 	void setPhase(double phaseValue);
 	void setSampleRate(double sampleRateValue);
 	void setGain(double gainValue);
+	void setEnvelopeParameters(double attack, double decay, double sustain, double release);
 	double getFrequency();
 	double getPhase();
 	double getBlockSineWave();
 	double getGain();
-	void play();
+	void play(double freq);
 	void stop();
+	void init(double sr, double freq);
 
 private:
 	double frequency;
@@ -30,5 +32,7 @@ private:
 	double phase;
 	double sampleRate;
 	double gain;		//Oscillator volume, controlled only by the GUI. Can be any value in the range 0:1
+	ADSR envelope;
+	ADSR::Parameters envelopeParameters;
 };
 
