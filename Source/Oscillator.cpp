@@ -31,8 +31,9 @@ void Oscillator::setGain(double gainValue)
 	gain = gainValue;
 }
 
-void Oscillator::setAmplitude(double amplitude)
+void Oscillator::setAmplitude(float amplitude)
 {
+	DBG("Oscillator::setAmplitude: " + std::to_string(amplitude));
 	this->amplitude = amplitude;
 }
 
@@ -58,7 +59,6 @@ double Oscillator::getPhase()
 
 //Return the sine wave (gets called for each sample)
 double Oscillator::getBlockSineWave(){
-
 	double wave = gain*envelope.getNextSample()*(double)sin((double)phase)*amplitude;
 
 	phase += (double)(M_PI * 2. * (frequency / sampleRate));

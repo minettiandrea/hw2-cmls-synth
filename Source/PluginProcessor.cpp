@@ -8,8 +8,12 @@
   ==============================================================================
 */
 
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+
+#include <iostream>
+using namespace std;
 
 //==============================================================================
 AddsynthAudioProcessor::AddsynthAudioProcessor()
@@ -98,7 +102,9 @@ void AddsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     
-    synth.initialize(sampleRate);       //Initialize all the oscillators with f=440 and gain=1 and set the main gain at 0.5
+    DBG("Add-Synth START");
+    notes.clear();
+    this->sampleRate = sampleRate;
 }
 
 void AddsynthAudioProcessor::releaseResources()
@@ -153,17 +159,42 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     MidiMessage m;
     int time;
     for (MidiBuffer::Iterator i(midiMessages); i.getNextEvent(m, time);) {
-        if (m.isNoteOn()) {
-            synth.setFoundamentalFrequency(m.getMidiNoteInHertz(m.getNoteNumber()) / 2);
-            synth.startNote();
-        }
-        else if (m.isNoteOff()) {
-            synth.stopNote();
+        DBG(m.getDescription() + " Note:" +  to_string(m.getNoteNumber()));
+        int note = m.getNoteNumber();
+        if (m.isPitchWheel()) {
+            for (auto& kv : notes) {
+                kv.second->setFoundamentalFrequency(m.getMidiNoteInHertz(kv.first) + (double)m.getPitchWheelValue() / 16384.0);
+            }
+        } else if (m.isNoteOn()) {
+            
+            if (notes.count(note) == 0) {
+                DBG("Create new synth for note: " + to_string(m.getNoteNumber()));
+                notes[note] = new Synth();
+                notes[note]->initialize(sampleRate);
+            }
+            notes[note]->setAmplitude(m.getFloatVelocity());
+            notes[note]->setFoundamentalFrequency(m.getMidiNoteInHertz(m.getNoteNumber()));
+            notes[note]->startNote();
+        } else if (m.isNoteOff()) {
+            notes[note]->stopNote();
         }
     }
     
+
+    float* channelDataL = buffer.getWritePointer(0);
+    float* channelDataR = buffer.getWritePointer(1);
+    int samples = buffer.getNumSamples();
+    for (int i = 0; i < buffer.getNumSamples(); ++i) {
+        channelDataL[i] = 0;
+        channelDataR[i] = 0;
+    }
+
     //Process the sound
-    synth.process(buffer);
+    for (auto& kv : notes) {
+        kv.second->process(channelDataL, channelDataR, samples);
+    }
+
+    //synth.process(channelDataL, channelDataR, samples);
 }
 
 //==============================================================================
@@ -194,9 +225,14 @@ void AddsynthAudioProcessor::setStateInformation (const void* data, int sizeInBy
 //======================== CUSTOM FUNCTIONS ===============================
 
 
-Synth* AddsynthAudioProcessor::getSynth()
+std::vector<Synth*> AddsynthAudioProcessor::getSynths()
 {
-    return &synth;
+    std::vector<Synth*> synths = std::vector<Synth*>();
+    for (auto& kv : notes) {
+        synths.push_back(kv.second);
+    }
+    return synths;
+
 }
 
 
@@ -207,3 +243,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new AddsynthAudioProcessor();
 }
+
+
+
+

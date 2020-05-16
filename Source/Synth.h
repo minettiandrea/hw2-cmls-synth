@@ -21,8 +21,9 @@ public:
     void setOutputGain(double gainValue);
     void setOscGain(int osc_id, double gain);
     void setFoundamentalFrequency(double freq);
+    void setAmplitude(float amp);
     void initialize(double sampleRate);
-    void process(AudioBuffer<float>& buffer);
+    void Synth::process(float*& channelDataL, float*& channelDataR, int samples);
     void startNote();
     void stopNote();
 

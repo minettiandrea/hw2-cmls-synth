@@ -43,6 +43,14 @@ void Synth::setFoundamentalFrequency(double freq) // here goes the logic for the
     }
 }
 
+void Synth::setAmplitude(float amp)
+{
+    DBG("Synth::setAmplitude: " + std::to_string(amp));
+    for (auto osc : oscillators) {
+        osc->setAmplitude(amp);
+    }
+}
+
 //Initialize all oscillators: 
 //Frequency: main oscillator with 440 and the secondaries with multiple integers of 440
 //Gain: 1
@@ -60,14 +68,13 @@ void Synth::initialize(double sampleRate)
 }
 
 //Process the sound for all the samples in buffer
-void Synth::process(AudioBuffer<float>& buffer)
+void Synth::process(float*& channelDataL, float*& channelDataR, int samples)
 {
-    float* channelDataL = buffer.getWritePointer(0);
-    float* channelDataR = buffer.getWritePointer(1);
 
-    for (int i = 0; i < buffer.getNumSamples(); ++i) {
-        channelDataL[i] = outputGain*(mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
-        channelDataR[i] = channelDataL[i];
+
+    for (int i = 0; i < samples; ++i) {
+        channelDataL[i] = channelDataL[i] + outputGain * (mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
+        channelDataR[i] = channelDataR[i] + channelDataL[i];
     }
 }
 

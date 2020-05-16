@@ -13,6 +13,8 @@
 #include <JuceHeader.h>
 #include "Synth.h"
 
+#include <map>
+
 //==============================================================================
 /**
 */
@@ -57,11 +59,11 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     //======================= CUSTOM FUNCTIONS ======================================
-    Synth* getSynth();
+    std::vector<Synth*> getSynths();
 
 private:
-    Synth synth;
-
+    std::map<int, Synth*> notes;
+    double sampleRate;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessor)
 };
