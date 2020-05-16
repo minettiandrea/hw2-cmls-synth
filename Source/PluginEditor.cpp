@@ -75,18 +75,11 @@ void AddsynthAudioProcessorEditor::resized()
 void AddsynthAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     if (slider == &outputGain) {
-        processor.setOutputGain(outputGain.getValue());
+        processor.getSynth()->setOutputGain(outputGain.getValue());
     }
-    else if (slider == &oscGains[0]) {
-        processor.setMainOscGain(oscGains[0].getValue());
-    }
-    else if (slider == &oscGains[1]) {
-        processor.setSecondaryOscGains(0, oscGains[1].getValue());
-    }
-    else if (slider == &oscGains[2]) {
-        processor.setSecondaryOscGains(1, oscGains[2].getValue());
-    }
-    else if (slider == &oscGains[3]) {
-        processor.setSecondaryOscGains(2, oscGains[3].getValue());
+
+    for (int i = 0; i < 4; i++) {
+        if (slider == &oscGains[i])
+            processor.getSynth()->setOscGain(i, oscGains[i].getValue());
     }
 }

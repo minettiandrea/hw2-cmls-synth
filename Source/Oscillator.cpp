@@ -31,6 +31,11 @@ void Oscillator::setGain(double gainValue)
 	gain = gainValue;
 }
 
+void Oscillator::setAmplitude(double amplitude)
+{
+	this->amplitude = amplitude;
+}
+
 void Oscillator::setEnvelopeParameters(double attack, double decay, double sustain, double release)
 {
 	envelopeParameters.attack = attack;
@@ -54,7 +59,7 @@ double Oscillator::getPhase()
 //Return the sine wave (gets called for each sample)
 double Oscillator::getBlockSineWave(){
 
-	double wave = gain*envelope.getNextSample()*(double)sin((double)phase);
+	double wave = gain*envelope.getNextSample()*(double)sin((double)phase)*amplitude;
 
 	phase += (double)(M_PI * 2. * (frequency / sampleRate));
 	if (phase > M_PI * 2.) phase -= M_PI * 2.;
@@ -67,10 +72,8 @@ double Oscillator::getGain()
 	return gain;
 }
 
-void Oscillator::play(double freq)
+void Oscillator::play()
 {
-	frequency = freq;
-	amplitude = 0.5;
 	envelope.noteOn();
 }
 
@@ -86,6 +89,7 @@ void Oscillator::init(double sr, double freq)
 	phase = 0;
 	sampleRate = sr;
 	gain = 1;
+	amplitude = 0.5;
 	envelope.setSampleRate(sr);
 	setEnvelopeParameters(0.1, 0.1, 1, 0.2);
 }

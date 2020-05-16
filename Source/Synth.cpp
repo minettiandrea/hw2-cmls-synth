@@ -10,14 +10,14 @@
 
 #include "Synth.h"
 
-Oscillator* Synth::getMainOsc()
+Synth::Synth()
 {
-	return &mainOsc;
+    this->oscillators = { &mainOsc,&secondaryOsc[0],&secondaryOsc[1],&secondaryOsc[2] };
 }
 
-Oscillator* Synth::getSecondaryOsc()
+int Synth::numOscillators()
 {
-    return secondaryOsc;
+    return nOsc;
 }
 
 double Synth::getOutputGain()
@@ -30,6 +30,19 @@ void Synth::setOutputGain(double gainValue)
     outputGain = gainValue;
 }
 
+void Synth::setOscGain(int osc_id, double gain)
+{
+    oscillators[osc_id]->setGain(gain);
+}
+
+void Synth::setFoundamentalFrequency(double freq) // here goes the logic for the frequency offset
+{
+    mainOsc.setFrequency(freq);
+    for (int i = 0; i < 3; i++) {
+        secondaryOsc[i].setFrequency(double(i + 2) * freq);
+    }
+}
+
 //Initialize all oscillators: 
 //Frequency: main oscillator with 440 and the secondaries with multiple integers of 440
 //Gain: 1
@@ -39,8 +52,8 @@ void Synth::initialize(double sampleRate)
 {
     mainOsc.init(sampleRate, 440);
 
-    for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].init(sampleRate, (i + 2) * 440);
+    for (auto osc : oscillators) {
+        osc->init(sampleRate, 440);
     }
 
     outputGain = 0.5;
@@ -59,17 +72,16 @@ void Synth::process(AudioBuffer<float>& buffer)
 }
 
 //Set values of the played note
-void Synth::startNote(double freq)
+void Synth::startNote()
 {
-    mainOsc.play(freq);
-    for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].play(double(i + 2) * freq);
+    for (auto osc : oscillators) {
+        osc->play();
     }
 }
 
 void Synth::stopNote()
 {
-    mainOsc.stop();
-    for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].stop();
-    }}
+    for (auto osc : oscillators) {
+        osc->stop();
+    }
+}

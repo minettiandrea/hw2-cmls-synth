@@ -154,7 +154,8 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     int time;
     for (MidiBuffer::Iterator i(midiMessages); i.getNextEvent(m, time);) {
         if (m.isNoteOn()) {
-            synth.startNote(m.getMidiNoteInHertz(m.getNoteNumber())/2);
+            synth.setFoundamentalFrequency(m.getMidiNoteInHertz(m.getNoteNumber()) / 2);
+            synth.startNote();
         }
         else if (m.isNoteOff()) {
             synth.stopNote();
@@ -163,17 +164,6 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     
     //Process the sound
     synth.process(buffer);
-   
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
 }
 
 //==============================================================================
@@ -202,20 +192,14 @@ void AddsynthAudioProcessor::setStateInformation (const void* data, int sizeInBy
 }
 
 //======================== CUSTOM FUNCTIONS ===============================
-void AddsynthAudioProcessor::setOutputGain(double gainValue)
+
+
+Synth* AddsynthAudioProcessor::getSynth()
 {
-    synth.setOutputGain(gainValue);
+    return &synth;
 }
 
-void AddsynthAudioProcessor::setMainOscGain(double gainValue)
-{
-    synth.getMainOsc()->setGain(gainValue);
-}
 
-void AddsynthAudioProcessor::setSecondaryOscGains(int oscIndex, double gainValue)
-{
-    synth.getSecondaryOsc()[oscIndex].setGain(gainValue);
-}
 
 //==============================================================================
 // This creates new instances of the plugin..
