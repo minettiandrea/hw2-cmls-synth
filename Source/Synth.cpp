@@ -35,11 +35,21 @@ void Synth::setOscGain(int osc_id, double gain)
     oscillators[osc_id]->setGain(gain);
 }
 
-void Synth::setFoundamentalFrequency(double freq) // here goes the logic for the frequency offset
+void Synth::setOscEnvelope(int osc_id, double a, double d, double s, double r)
 {
-    mainOsc.setFrequency(freq);
-    for (int i = 0; i < 3; i++) {
-        secondaryOsc[i].setFrequency(double(i + 2) * freq);
+    oscillators[osc_id]->setEnvelopeParameters(a, d, s, r);
+}
+
+void Synth::setOscOffset(int osc_id, double offset)
+{
+    oscillators[osc_id]->setFrequencyOffset(offset);
+}
+
+//Set the frequency of the oscillator (the offset get applied in the setFrequency method)
+void Synth::setFoundamentalFrequency(double freq)
+{
+    for (auto osc : oscillators) {
+        osc->setFundamental(freq);
     }
 }
 

@@ -8,10 +8,7 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include <string.h>
-using namespace std;
 
 //==============================================================================
 AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcessor& p)
@@ -19,33 +16,38 @@ AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
 
-    outputGain.setRange(0, 1, 0.0001);
-    outputGain.setValue(0.5);
-    outputGain.setSkewFactorFromMidPoint(0.2);
+    //Passing a reference to the processor at each component (except for the envelopes for which is done below)
+    mixer.setProcessor(&processor);
+    output.setProcessor(&processor);
+    offsets.setProcessor(&processor);
 
-    outputGainLabel.setText("GAIN", dontSendNotification);
-    outputGainLabel.attachToComponent(&outputGain, true);
+    
+    setSize(925, 600);
 
-    for (int i = 0; i < 4; i++) {
-        oscGains[i].setRange(0, 1, 0.0001);
-        oscGains[i].setValue(0.5);
-        oscGains[i].setSkewFactorFromMidPoint(0.2);
-        oscGainsLabels[i].setText("OSC " + to_string(i) + " GAIN", dontSendNotification);
-        oscGainsLabels[i].attachToComponent(&oscGains[i], true);
-        oscGains[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+    //Set all the labels text and center them
+    mixerLabel.setText("MIXER", dontSendNotification);
+    mixerLabel.setJustificationType(Justification(36));
+    envelopeLabel.setText("ENVELOPES", dontSendNotification);
+    envelopeLabel.setJustificationType(Justification(36));
+    offsetsLabel.setText("OFFSETS", dontSendNotification);
+    offsetsLabel.setJustificationType(Justification(36));
+    outputLabel.setText("OUTPUT", dontSendNotification);
+    outputLabel.setJustificationType(Justification(36));
 
-        oscGains[i].addListener(this);
-        addAndMakeVisible(oscGains[i]);
-        addAndMakeVisible(oscGainsLabels[i]);
+    //Make all components and labels visible
+    addAndMakeVisible(mixer);
+    for (auto& env : envelope) {
+        addAndMakeVisible(env);
+        //Done here in order to have a single loop
+        env.setProcessor(&processor);
     }
-
-    outputGain.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-    outputGain.addListener(this);
-
-    addAndMakeVisible(outputGain);
-    addAndMakeVisible(outputGainLabel);
+    addAndMakeVisible(offsets);
+    addAndMakeVisible(output);
+    addAndMakeVisible(mixerLabel);
+    addAndMakeVisible(envelopeLabel);
+    addAndMakeVisible(offsetsLabel);
+    addAndMakeVisible(outputLabel);
 }
 
 AddsynthAudioProcessorEditor::~AddsynthAudioProcessorEditor()
@@ -63,28 +65,40 @@ void AddsynthAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    auto sliderLeft = 120;
 
-    outputGain.setBounds(sliderLeft, 20, getWidth() - sliderLeft - 10, 20);
-    oscGains[0].setBounds(sliderLeft, 50, getWidth() - sliderLeft - 10, 20);
-    for (int i = 1; i < 4; i++) {
-        oscGains[i].setBounds(sliderLeft, oscGains[i - 1].getBounds().getY() + 30, getWidth() - sliderLeft - 10, 20);
-    }
-}
+    //Set a 10px global margin
+    int margin = 10;
+    auto area = getLocalBounds().reduced(margin);
 
-void AddsynthAudioProcessorEditor::sliderValueChanged(Slider* slider)
-{
-    if (slider == &outputGain) {
-        for (auto& synth : processor.getSynths()) {
-            synth->setOutputGain(outputGain.getValue());
-        }
+    //Add the Mixer section to the left
+    auto mixerSection = area.removeFromLeft(mixer.getWidth());
+    mixerLabel.setBounds(mixerSection.removeFromTop(30));
+    mixer.setBounds(mixerSection.removeFromBottom(mixer.getHeight()));
+
+    //Set a margin between Mixer and Envelopes sections
+    area.removeFromLeft(10);
+
+    //Add the Envelopes section right to the Mixer one (also setting the osc ID while adding them)
+    auto envelopeSection = area.removeFromLeft(envelope[0].getWidth());
+    envelopeLabel.setBounds(envelopeSection.removeFromTop(30));
+    for (int i = 3; i >= 0; i--) {
+        envelope[i].setId(i);
+        envelope[i].setBounds(envelopeSection.removeFromBottom(envelope[i].getHeight()));
     }
 
-    for (int i = 0; i < 4; i++) {
-        if (slider == &oscGains[i]) {
-            for (auto& synth : processor.getSynths()) {
-                synth->setOscGain(i, oscGains[i].getValue());
-            }
-        }
-    }
+    //Set a margin between Envelopes and Offsets sections
+    area.removeFromLeft(10);
+
+    //Add the Offsets section right to the Envelopes one
+    auto offsetsSection = area.removeFromLeft(offsets.getWidth());
+    offsetsLabel.setBounds(offsetsSection.removeFromTop(30));
+    offsets.setBounds(offsetsSection.removeFromBottom(offsets.getHeight()));
+
+    //Set a margin between Offsets and Output sections
+    area.removeFromLeft(10);
+
+    //Add the Output section right to the Offsets one
+    auto outputSection = area.removeFromLeft(output.getWidth());
+    outputLabel.setBounds(outputSection.removeFromTop(30));
+    output.setBounds(outputSection.removeFromBottom(output.getHeight()));
 }

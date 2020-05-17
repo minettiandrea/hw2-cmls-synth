@@ -20,6 +20,8 @@ public:
     double getOutputGain();
     void setOutputGain(double gainValue);
     void setOscGain(int osc_id, double gain);
+    void setOscEnvelope(int osc_id, double a, double d, double s, double r);
+    void setOscOffset(int osc_id, double offset);
     void setFoundamentalFrequency(double freq);
     void setAmplitude(float amp);
     void initialize(double sampleRate);

@@ -12,9 +12,16 @@
 #include "Oscillator.h"
 #include <cmath>
 
-void Oscillator::setFrequency(double frequencyValue)
+void Oscillator::setFundamental(double frequencyValue)
 {
-	frequency = frequencyValue;
+	fundamental = frequencyValue;
+	refreshFrequency();
+}
+
+void Oscillator::setFrequencyOffset(double offsetValue)
+{
+	frequencyOffset = offsetValue;
+	refreshFrequency();
 }
 
 void Oscillator::setPhase(double phaseValue)
@@ -85,7 +92,9 @@ void Oscillator::stop()
 void Oscillator::init(double sr, double freq)
 {
 	stop();
-	frequency = freq;
+	fundamental = freq;
+	frequencyOffset = 0;
+	refreshFrequency();
 	phase = 0;
 	sampleRate = sr;
 	gain = 1;
@@ -93,5 +102,11 @@ void Oscillator::init(double sr, double freq)
 	envelope.setSampleRate(sr);
 	setEnvelopeParameters(0.1, 0.1, 1, 0.2);
 }
+
+void Oscillator::refreshFrequency()
+{
+	frequency = fundamental + frequencyOffset;
+}
+
 
 

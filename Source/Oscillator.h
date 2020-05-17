@@ -13,7 +13,8 @@
 
 class Oscillator {
 public:
-	void setFrequency(double frequencyValue);
+	void setFundamental(double frequencyValue);
+	void setFrequencyOffset(double offsetValue);
 	void setPhase(double phaseValue);
 	void setSampleRate(double sampleRateValue);
 	void setGain(double gainValue);
@@ -26,9 +27,12 @@ public:
 	void play();
 	void stop();
 	void init(double sr, double freq);
+	void refreshFrequency();
 
 private:
+	double fundamental;
 	double frequency;
+	double frequencyOffset;
 	float amplitude;		//Sinewave amplitude, controlled only by MIDI key press. Can be 0 (note off) or 0.5 (note on)
 	double phase;
 	double sampleRate;

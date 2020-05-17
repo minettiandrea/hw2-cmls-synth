@@ -12,11 +12,17 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "MixerGui.h"
+#include "EnvelopeGui.h"
+#include "OffsetGui.h"
+#include "OutputGui.h"
+#include <string.h>
+using namespace std;
 
 //==============================================================================
 /**
 */
-class AddsynthAudioProcessorEditor  : public AudioProcessorEditor, private Slider::Listener
+class AddsynthAudioProcessorEditor  : public AudioProcessorEditor
 {
 public:
     AddsynthAudioProcessorEditor (AddsynthAudioProcessor&);
@@ -31,12 +37,17 @@ private:
     // access the processor object that created it.
     AddsynthAudioProcessor& processor;
 
-    Slider outputGain;
-    Label outputGainLabel;
-    Slider oscGains[4];
-    Label oscGainsLabels[4];
+    MixerGui mixer;
+    EnvelopeGui envelope[4];
+    OffsetGui offsets;
+    OutputGui output;
 
-    void sliderValueChanged(Slider* slider) override;
+    Label mixerLabel;
+    Label envelopeLabel;
+    Label offsetsLabel;
+    Label outputLabel;
+
+    //void sliderValueChanged(Slider* slider) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessorEditor)
 };
