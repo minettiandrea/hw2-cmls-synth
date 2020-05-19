@@ -18,6 +18,7 @@ public:
     Synth();
     int numOscillators();
     double getOutputGain();
+    double getFundamentalFrequency();
     void setOutputGain(double gainValue);
     void setOscGain(int osc_id, double gain);
     void setOscEnvelope(int osc_id, double a, double d, double s, double r);

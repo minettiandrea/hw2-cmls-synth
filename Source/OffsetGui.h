@@ -29,12 +29,14 @@ public:
 
     //==================CUSTOM METHODS=======================   
     void setProcessor(AddsynthAudioProcessor* p);
+    void changeView();
 
 private:
     AddsynthAudioProcessor* processor;
 
-    Slider oscOffset[3];
-    Label oscOffsetLabel[3];
+    Slider freeOffset[3], harmonicOffset[3];
+    Label freeOffsetLabel[3], harmonicOffsetLabel[3];
+    TextButton offsetType[2];
 
     void sliderValueChanged(Slider* slider) override;
 

@@ -25,6 +25,11 @@ double Synth::getOutputGain()
 	return outputGain;
 }
 
+double Synth::getFundamentalFrequency()
+{
+    return oscillators[0]->getFrequency();
+}
+
 void Synth::setOutputGain(double gainValue)
 {
     outputGain = gainValue;

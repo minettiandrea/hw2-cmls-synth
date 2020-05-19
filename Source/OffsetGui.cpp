@@ -20,23 +20,54 @@ OffsetGui::OffsetGui()
 
     for (int i = 0; i < 3; i++) {
         //Set all the sliders properties
-        oscOffset[i].setRange(0, 1000, 0.0001);
-        oscOffset[i].setValue(0);
-        oscOffset[i].setSliderStyle(Slider::Rotary);
-        oscOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+        freeOffset[i].setRange(0, 1000, 0.0001);
+        freeOffset[i].setValue(0);
+        freeOffset[i].setSliderStyle(Slider::Rotary);
+        freeOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+        
+        harmonicOffset[i].setRange(0, 10, 1);
+        harmonicOffset[i].setValue(0);
+        harmonicOffset[i].setSliderStyle(Slider::Rotary);
+        harmonicOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 
         //Add the listener
-        oscOffset[i].addListener(this);
+        freeOffset[i].addListener(this);
+        harmonicOffset[i].addListener(this);
         
         //Name the label, center it and attach it to the corresponding slider
-        oscOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
-        oscOffsetLabel[i].setJustificationType(Justification(36));
-        oscOffsetLabel[i].attachToComponent(&oscOffset[i], false);
+        freeOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
+        freeOffsetLabel[i].setJustificationType(Justification(36));
+        freeOffsetLabel[i].attachToComponent(&freeOffset[i], false);
+        
+        harmonicOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
+        harmonicOffsetLabel[i].setJustificationType(Justification(36));       //center the label
+        harmonicOffsetLabel[i].attachToComponent(&harmonicOffset[i], false);
 
         //Make slider and label visible
-        addAndMakeVisible(oscOffset[i]);
-        addAndMakeVisible(oscOffsetLabel[i]);
+        addAndMakeVisible(freeOffset[i]);
+        addAndMakeVisible(freeOffsetLabel[i]);
+        
+        addAndMakeVisible(harmonicOffset[i]);
+        addAndMakeVisible(harmonicOffsetLabel[i]);
+        
+        //Hide the HARMONIC offset slider (default view is on FREE)
+        harmonicOffset[i].setVisible(false);
+        harmonicOffsetLabel[i].setVisible(false);
     }
+    
+    for (auto& button : offsetType) {
+        //Make the buttons toggle, add them to the same radio group and link the onClick function
+        button.setClickingTogglesState(true);
+        button.setRadioGroupId(1, dontSendNotification);
+        button.onClick = [this] {changeView();};
+        addAndMakeVisible(button);
+    }
+
+    offsetType[0].setButtonText("FREE");
+    offsetType[1].setButtonText("HARMONIC");
+
+    //Set the FREE button as default
+    offsetType[0].setToggleState(true, dontSendNotification);
 
 }
 
@@ -65,17 +96,39 @@ void OffsetGui::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     
-    //Insert all the elements in a FlexBox in order to have them displayed more ordered
-    FlexBox container;
+    //Create 2 FlexBox layout (one for FREE configuration and one for HARMONIC configuration)
+    FlexBox freeLayout;
+    FlexBox harmonicLayout;
 
-    container.flexDirection = FlexBox::Direction::column;
-    container.justifyContent = FlexBox::JustifyContent::center;
+    freeLayout.flexDirection = FlexBox::Direction::column;
+    freeLayout.justifyContent = FlexBox::JustifyContent::center;
+    freeLayout.alignContent = FlexBox::AlignContent::center;
 
-    for (auto& element : oscOffset) {
-        container.items.add(FlexItem(element).withMargin(FlexItem::Margin(50, 0, 30, 0)).withFlex(1, 1));
+    harmonicLayout.flexDirection = FlexBox::Direction::column;
+    harmonicLayout.justifyContent = FlexBox::JustifyContent::center;
+    harmonicLayout.alignContent = FlexBox::AlignContent::center;
+
+    //Add the sliders to the respective layout
+    for (auto& element : freeOffset) {
+        freeLayout.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 30, 0)).withFlex(1, 1));
+    }
+    
+    for (auto& element : harmonicOffset) {
+        harmonicLayout.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 30, 0)).withFlex(1, 1));
+    }
+    
+    //Add the buttons to both layouts
+    for (auto& button : offsetType) {
+        freeLayout.items.add(FlexItem(button).withMargin(FlexItem::Margin(0, 0, 15, 0)).withMaxHeight(30).withWidth(100).withFlex(1, 1));
     }
 
-    container.performLayout(getBounds().toFloat());
+    for (auto& button : offsetType) {
+        harmonicLayout.items.add(FlexItem(button).withMargin(FlexItem::Margin(0, 0, 15, 0)).withMaxHeight(30).withWidth(100).withFlex(1, 1));
+    }
+
+    //Perform both layouts (they will be visible one at a time)
+    freeLayout.performLayout(getBounds().toFloat());
+    harmonicLayout.performLayout(getBounds().toFloat());
 
 }
 
@@ -83,9 +136,14 @@ void OffsetGui::resized()
 void OffsetGui::sliderValueChanged(Slider* slider)
 {
     for (int i = 0; i < 3; i++) {
-        if (slider == &oscOffset[i]) {
+        if (slider == &freeOffset[i]) {
             for (auto& synth : processor->getSynths()) {
-                synth->setOscOffset(i + 1, oscOffset[i].getValue());
+                synth->setOscOffset(i + 1, freeOffset[i].getValue());
+            }
+        }
+        else if (slider == &harmonicOffset[i]) {
+            for (auto& synth : processor->getSynths()) {
+                synth->setOscOffset(i + 1, harmonicOffset[i].getValue()*synth->getFundamentalFrequency());
             }
         }
     }
@@ -99,3 +157,37 @@ void OffsetGui::setProcessor(AddsynthAudioProcessor* p)
 {
     processor = p;
 }
+
+void OffsetGui::changeView()
+{    
+    for (int i = 0; i < 3; i++) {
+        if (offsetType[0].getToggleState()) {
+            //Set the offset view to FREE
+            harmonicOffset[i].setVisible(false);
+            harmonicOffsetLabel[i].setVisible(false);
+
+            freeOffset[i].setVisible(true);
+            freeOffsetLabel[i].setVisible(true);
+
+            //Set the oscillators offsets
+            for (auto& synth : processor->getSynths()) {
+                synth->setOscOffset(i + 1, freeOffset[i].getValue());
+            }
+        }
+        else if (offsetType[1].getToggleState()) {
+            //set the offset view to HARMONIC
+            freeOffset[i].setVisible(false);
+            freeOffsetLabel[i].setVisible(false);
+
+            harmonicOffset[i].setVisible(true);
+            harmonicOffsetLabel[i].setVisible(true);
+
+            //Set the oscillators offsets
+            for (auto& synth : processor->getSynths()) {
+                synth->setOscOffset(i + 1, harmonicOffset[i].getValue() * synth->getFundamentalFrequency());
+            }
+        }
+    }
+
+}
+

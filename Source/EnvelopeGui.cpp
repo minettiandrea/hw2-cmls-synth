@@ -25,7 +25,7 @@ EnvelopeGui::EnvelopeGui()
 
     for (int i = 0; i < 4; i++) {
         //Set all the slider properties
-        envParam[i].setRange(0.1, 5, 0.01);
+        envParam[i].setRange(0.01, 5, 0.01);
         envParam[i].setValue(0.1);
         envParam[i].setSliderStyle(Slider::Rotary);
         envParam[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);

@@ -100,7 +100,7 @@ void Oscillator::init(double sr, double freq)
 	gain = 1;
 	amplitude = 0.5;
 	envelope.setSampleRate(sr);
-	setEnvelopeParameters(0.1, 0.1, 1, 0.2);
+	setEnvelopeParameters(0.1, 0.1, 1, 0.1);
 }
 
 void Oscillator::refreshFrequency()
