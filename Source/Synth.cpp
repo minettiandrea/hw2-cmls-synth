@@ -83,8 +83,9 @@ void Synth::process(float*& channelDataL, float*& channelDataR, int samples)
 
 
     for (int i = 0; i < samples; ++i) {
-        channelDataL[i] = channelDataL[i] + outputGain * (mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
-        channelDataR[i] = channelDataR[i] + channelDataL[i];
+        auto synthChannelData = outputGain * (mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
+        channelDataL[i] = channelDataL[i] + synthChannelData;
+        channelDataR[i] = channelDataR[i] + synthChannelData;
     }
 }
 
