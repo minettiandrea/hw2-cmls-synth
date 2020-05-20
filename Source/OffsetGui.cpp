@@ -12,35 +12,34 @@
 
 //==============================================================================
 OffsetGui::OffsetGui()
-{
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-    
+{   
     setSize(150, 540);
 
     for (int i = 0; i < 3; i++) {
         //Set all the sliders properties
         freeOffset[i].setRange(0, 1000, 0.0001);
         freeOffset[i].setValue(0);
-        freeOffset[i].setSliderStyle(Slider::Rotary);
+        freeOffset[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
         freeOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-        
+
         harmonicOffset[i].setRange(0, 10, 1);
         harmonicOffset[i].setValue(0);
-        harmonicOffset[i].setSliderStyle(Slider::Rotary);
+        harmonicOffset[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
         harmonicOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 
         //Add the listener
         freeOffset[i].addListener(this);
         harmonicOffset[i].addListener(this);
         
-        //Name the label, center it and attach it to the corresponding slider
+        //Name the labels, set the font, center it and attach it to the corresponding slider
         freeOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
+        freeOffsetLabel[i].setFont(Font(16.0f));
         freeOffsetLabel[i].setJustificationType(Justification(36));
         freeOffsetLabel[i].attachToComponent(&freeOffset[i], false);
         
         harmonicOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
-        harmonicOffsetLabel[i].setJustificationType(Justification(36));       //center the label
+        harmonicOffsetLabel[i].setFont(Font(16.0f));
+        harmonicOffsetLabel[i].setJustificationType(Justification(36));
         harmonicOffsetLabel[i].attachToComponent(&harmonicOffset[i], false);
 
         //Make slider and label visible
@@ -77,25 +76,16 @@ OffsetGui::~OffsetGui()
 
 void OffsetGui::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+    //Set background color
+    g.fillAll(Colours::black.brighter(0.2));  
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
+    //Draw the outline
+    g.setColour(Colours::black.brighter(0.1));
+    g.drawRect (getLocalBounds(), 1.5);  
 }
 
 void OffsetGui::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-    
     //Create 2 FlexBox layout (one for FREE configuration and one for HARMONIC configuration)
     FlexBox freeLayout;
     FlexBox harmonicLayout;

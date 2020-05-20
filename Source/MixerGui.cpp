@@ -15,23 +15,22 @@
 //==============================================================================
 MixerGui::MixerGui()
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
     setSize(125, 540);
 
     for (int i = 0; i < 4; i++) {
         //Set all the slider properties
         oscGain[i].setRange(0, 1, 0.0001);
         oscGain[i].setValue(1);
-        oscGain[i].setSliderStyle(Slider::Rotary);
+        oscGain[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
         oscGain[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 
         //Add the listener
         oscGain[i].addListener(this);
 
-        //Name the label, center it and attach it to the corresponding slider
+        //Name the label, set the font, center it and attach it to the corresponding slider
         oscGainLabel[i].setText("OSC " + to_string(i+1), dontSendNotification);
-        oscGainLabel[i].setJustificationType(Justification(36));       //center the label
+        oscGainLabel[i].setFont(Font(16.0f));
+        oscGainLabel[i].setJustificationType(Justification(36));
         oscGainLabel[i].attachToComponent(&oscGain[i], false);
 
         //Make slider and label visible
@@ -47,34 +46,27 @@ MixerGui::~MixerGui()
 
 void MixerGui::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+    //Set background color
+    g.fillAll(Colours::black.brighter(0.2));
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
+    //Draw the outline
+    g.setColour(Colours::black.brighter(0.1));
+    g.drawRect (getLocalBounds(), 1.5);
 }
 
 void MixerGui::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-    FlexBox container;
+    //Define the layout
+    FlexBox layout;
 
-    container.flexDirection = FlexBox::Direction::column;
-    container.justifyContent = FlexBox::JustifyContent::center;
+    layout.flexDirection = FlexBox::Direction::column;
+    layout.justifyContent = FlexBox::JustifyContent::center;
 
     for (auto& element : oscGain) {
-        container.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 20, 0)).withFlex(1, 1));
+        layout.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 20, 0)).withFlex(1, 1));
     }
 
-    container.performLayout(getBounds().toFloat());
+    layout.performLayout(getBounds().toFloat());
 
 }
 

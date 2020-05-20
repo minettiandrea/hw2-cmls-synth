@@ -14,9 +14,6 @@
 AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-
     //Passing a reference to the processor at each component (except for the envelopes for which is done below)
     mixer.setProcessor(&processor);
     output.setProcessor(&processor);
@@ -24,15 +21,22 @@ AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcess
 
     
     setSize(925, 600);
+    
+    //Setting the custom look and feel
+    setLookAndFeel(&customLookAndFeel);
 
-    //Set all the labels text and center them
+    //Set all the labels text and font and center them
     mixerLabel.setText("MIXER", dontSendNotification);
+    mixerLabel.setFont(Font(22.0f, Font::bold));
     mixerLabel.setJustificationType(Justification(36));
     envelopeLabel.setText("ENVELOPES", dontSendNotification);
+    envelopeLabel.setFont(Font(20.0f, Font::bold));
     envelopeLabel.setJustificationType(Justification(36));
     offsetsLabel.setText("OFFSETS", dontSendNotification);
+    offsetsLabel.setFont(Font(20.0f, Font::bold));
     offsetsLabel.setJustificationType(Justification(36));
     outputLabel.setText("OUTPUT", dontSendNotification);
+    outputLabel.setFont(Font(20.0f, Font::bold));
     outputLabel.setJustificationType(Justification(36));
 
     //Make all components and labels visible
@@ -57,15 +61,12 @@ AddsynthAudioProcessorEditor::~AddsynthAudioProcessorEditor()
 //==============================================================================
 void AddsynthAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+    // Set background color
+    g.fillAll(Colours::black.brighter(0.4));
 }
 
 void AddsynthAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-
     //Set a 10px global margin
     int margin = 10;
     auto area = getLocalBounds().reduced(margin);

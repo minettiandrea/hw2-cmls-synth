@@ -16,6 +16,7 @@
 #include "EnvelopeGui.h"
 #include "OffsetGui.h"
 #include "OutputGui.h"
+#include "CustomLookAndFeel.h"
 #include <string.h>
 using namespace std;
 
@@ -46,8 +47,8 @@ private:
     Label envelopeLabel;
     Label offsetsLabel;
     Label outputLabel;
-
-    //void sliderValueChanged(Slider* slider) override;
+    
+    CustomLookAndFeel customLookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessorEditor)
 };
