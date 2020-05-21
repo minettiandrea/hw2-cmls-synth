@@ -25,6 +25,7 @@ public:
     void Synth::process(float*& channelDataL, float*& channelDataR, int samples);
     void startNote();
     void stopNote();
+    bool active();
 
 private:
     State* state;

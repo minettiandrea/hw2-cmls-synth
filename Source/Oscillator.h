@@ -24,6 +24,7 @@ public:
 	void play();
 	void stop();
 	void init(double sr);
+	bool active();
 
 private:
 	float fundamental;

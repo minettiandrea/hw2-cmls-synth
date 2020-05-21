@@ -91,3 +91,12 @@ void Synth::stopNote()
         osc->stop();
     }
 }
+
+bool Synth::active()
+{
+    bool active = false;
+    for (auto& o : oscillators) {
+        active = active || o->active();
+    }
+    return active;
+}

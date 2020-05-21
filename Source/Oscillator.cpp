@@ -79,6 +79,11 @@ void Oscillator::init(double sr)
 	envelope.setSampleRate(sr);
 }
 
+bool Oscillator::active()
+{
+	return envelope.isActive();
+}
+
 float Oscillator::offset()
 {
 

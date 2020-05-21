@@ -191,6 +191,21 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         channelDataR[i] = 0;
     }
 
+    //Delete inactive synth
+
+    auto toDelete = std::vector<int>();
+    for (auto& kv : notes) {
+        if (!kv.second->active()) {
+            toDelete.push_back(kv.first);
+        }
+    }
+
+    for (auto i : toDelete) {
+        notes.erase(i);
+    }
+
+    //DBG("Active synths: " + std::to_string(notes.size()));
+
     //Process the sound
     for (auto& kv : notes) {
         kv.second->process(channelDataL, channelDataR, samples);
