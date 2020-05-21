@@ -26,7 +26,7 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-    void init(int i, EnvelopeState* state);
+    void init(int id, EnvelopeState* state);
     
 
 private:

@@ -16,7 +16,7 @@ EnvelopeGui::EnvelopeGui()
     setSize(500, 135);
 }
 
-void EnvelopeGui::init(int i, EnvelopeState* state)
+void EnvelopeGui::init(int id, EnvelopeState* state)
 {
 
     this->state = state;
@@ -29,7 +29,7 @@ void EnvelopeGui::init(int i, EnvelopeState* state)
 
     for (int i = 0; i < 4; i++) {
         //Set all the slider properties
-        envParam[i].setRange(0.01, 5, 0.01);
+        envParam[i].setRange(0.001, 3, 0.001);
         envParam[i].setValue(0.1);
         envParam[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
         envParam[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
@@ -47,11 +47,11 @@ void EnvelopeGui::init(int i, EnvelopeState* state)
     }
 
     //Update the "Sustain" slider values
-    envParam[2].setRange(0, 1, 0.01);
+    envParam[2].setRange(0, 1, 0.001);
     envParam[2].setValue(1);
 
-    //Set a default text for the osc ID. It will recieve the right ID from the PluginEditor
-    oscIdLabel.setText(to_string(i), dontSendNotification);
+    //Set the osc ID
+    oscIdLabel.setText(to_string(id + 1), dontSendNotification);
     oscIdLabel.setFont(Font(20.0f, Font::bold));
     oscIdLabel.setJustificationType(Justification(36));
     addAndMakeVisible(oscIdLabel);

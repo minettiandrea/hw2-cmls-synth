@@ -77,10 +77,11 @@ std::vector<AudioProcessorParameter*> State::getParameters()
 
 EnvelopeState::EnvelopeState(std::string id)
 {
-    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.0f, 5.0f, 0.1f);
-    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.0f, 5.0f, 0.1f);
-    this->sustain   = new AudioParameterFloat(id + "_sustain", id + " Sustain", 0.0f, 5.0f, 1.0f);
-    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.0f, 5.0f, 0.2f);
+
+    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.001f, 3.0f, 0.1f);
+    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.001f, 3.0f, 0.1f);
+    this->sustain   = new AudioParameterFloat(id + "_sustain", id + " Sustain", 0.0f, 1.0f, 1.0f);
+    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.001f, 3.0f, 0.1f);
 }
 
 EnvelopeState::~EnvelopeState()
@@ -93,22 +94,22 @@ EnvelopeState::~EnvelopeState()
 
 void EnvelopeState::setAttack(float a)
 {
-    this->attack->setValueNotifyingHost(a / 5);
+    this->attack->setValueNotifyingHost(a / 3);
 }
 
 void EnvelopeState::setDecay(float d)
 {
-    this->decay->setValueNotifyingHost(d / 5);
+    this->decay->setValueNotifyingHost(d / 3);
 }
 
 void EnvelopeState::setSustain(float s)
 {
-    this->sustain->setValueNotifyingHost(s / 5);
+    this->sustain->setValueNotifyingHost(s);
 }
 
 void EnvelopeState::setRelease(float r)
 {
-    this->release->setValueNotifyingHost(r / 5);
+    this->release->setValueNotifyingHost(r / 3);
 }
 
 AudioParameterFloat* EnvelopeState::getAttack()
@@ -144,7 +145,7 @@ std::vector<AudioProcessorParameter*> EnvelopeState::getParameters()
 MixerState::MixerState()
 {
     for (int i = 1; i <= 4; i++) {
-        mix[(i-1)] = new AudioParameterFloat("osc"+std::to_string(i)+"_mix", "OSC"+ std::to_string(i) +" Mix", 0.0f, 1.0f, 1.0f);
+        mix[(i-1)] = new AudioParameterFloat("osc"+std::to_string(i)+"_mix", "OSC"+ std::to_string(i) +" Mix", 0.0f, 0.25f, 0.25f);
     }
 }
 
