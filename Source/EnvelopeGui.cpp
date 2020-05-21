@@ -11,12 +11,16 @@
 #include "EnvelopeGui.h"
 
 //==============================================================================
-EnvelopeGui::EnvelopeGui(int i, EnvelopeState* state)
-{   
+EnvelopeGui::EnvelopeGui()
+{
+    setSize(500, 135);
+}
+
+void EnvelopeGui::init(int i, EnvelopeState* state)
+{
 
     this->state = state;
 
-    setSize(500, 135);
 
     paramLabel[0].setText("A", dontSendNotification);
     paramLabel[1].setText("D", dontSendNotification);

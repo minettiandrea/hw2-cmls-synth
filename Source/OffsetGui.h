@@ -21,9 +21,10 @@ using namespace std;
 class OffsetGui    : public Component, private Slider::Listener
 {
 public:
-    OffsetGui(OffsetState* state);
+    OffsetGui();
     ~OffsetGui();
 
+    void init(OffsetState* state);
     void paint (Graphics&) override;
     void resized() override;
 

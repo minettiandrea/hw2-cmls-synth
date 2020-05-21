@@ -35,6 +35,7 @@ AddsynthAudioProcessor::AddsynthAudioProcessor()
 
 AddsynthAudioProcessor::~AddsynthAudioProcessor()
 {
+    DBG("~AddsynthAudioProcessor");
 }
 
 //==============================================================================
@@ -172,7 +173,7 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             
             if (notes.count(note) == 0) {
                 DBG("Create new synth for note: " + to_string(m.getNoteNumber()));
-                notes[note] = new Synth(&state);
+                notes[note] = std::make_unique<Synth>(&state);
                 notes[note]->initialize(sampleRate);
             }
             notes[note]->setAmplitude(m.getFloatVelocity());

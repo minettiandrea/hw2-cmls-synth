@@ -16,18 +16,19 @@ AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcess
     : AudioProcessorEditor (&p), processor (p)
 {
     //Passing a reference to the processor at each component (except for the envelopes for which is done below)
-    mixer = new MixerGui(p.getState()->getMixer());
+    mixer.init(p.getState()->getMixer());
     for (int i = 0; i < 4; i++) {
-        envelope[i] = new EnvelopeGui(i,p.getState()->getEnvelope(i));
+        envelope[i].init(i,p.getState()->getEnvelope(i));
     }
-    offsets = new OffsetGui(p.getState()->getOffset());
-    output = new OutputGui(p.getState());
+    offsets.init(p.getState()->getOffset());
+    output.init(p.getState());
 
     
     setSize(925, 600);
     
     //Setting the custom look and feel
-    setLookAndFeel(&customLookAndFeel);
+    customLookAndFeel = new CustomLookAndFeel();
+    setLookAndFeel(customLookAndFeel);
 
     //Set all the labels text and font and center them
     mixerLabel.setText("MIXER", dontSendNotification);
@@ -58,7 +59,9 @@ AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcess
 
 AddsynthAudioProcessorEditor::~AddsynthAudioProcessorEditor()
 {
-    deleteAllChildren();
+    setLookAndFeel(nullptr);
+    delete customLookAndFeel;
+    DBG("~AddsynthAudioProcessorEditor");
 }
 
 //==============================================================================
@@ -75,33 +78,33 @@ void AddsynthAudioProcessorEditor::resized()
     auto area = getLocalBounds().reduced(margin);
 
     //Add the Mixer section to the left
-    auto mixerSection = area.removeFromLeft(mixer->getWidth());
+    auto mixerSection = area.removeFromLeft(mixer.getWidth());
     mixerLabel.setBounds(mixerSection.removeFromTop(30));
-    mixer->setBounds(mixerSection.removeFromBottom(mixer->getHeight()));
+    mixer.setBounds(mixerSection.removeFromBottom(mixer.getHeight()));
 
     //Set a margin between Mixer and Envelopes sections
     area.removeFromLeft(10);
 
     //Add the Envelopes section right to the Mixer one (also setting the osc ID while adding them)
-    auto envelopeSection = area.removeFromLeft(envelope[0]->getWidth());
+    auto envelopeSection = area.removeFromLeft(envelope[0].getWidth());
     envelopeLabel.setBounds(envelopeSection.removeFromTop(30));
     for (int i = 3; i >= 0; i--) {
-        envelope[i]->setBounds(envelopeSection.removeFromBottom(envelope[i]->getHeight()));
+        envelope[i].setBounds(envelopeSection.removeFromBottom(envelope[i].getHeight()));
     }
 
     //Set a margin between Envelopes and Offsets sections
     area.removeFromLeft(10);
 
     //Add the Offsets section right to the Envelopes one
-    auto offsetsSection = area.removeFromLeft(offsets->getWidth());
+    auto offsetsSection = area.removeFromLeft(offsets.getWidth());
     offsetsLabel.setBounds(offsetsSection.removeFromTop(30));
-    offsets->setBounds(offsetsSection.removeFromBottom(offsets->getHeight()));
+    offsets.setBounds(offsetsSection.removeFromBottom(offsets.getHeight()));
 
     //Set a margin between Offsets and Output sections
     area.removeFromLeft(10);
 
     //Add the Output section right to the Offsets one
-    auto outputSection = area.removeFromLeft(output->getWidth());
+    auto outputSection = area.removeFromLeft(output.getWidth());
     outputLabel.setBounds(outputSection.removeFromTop(30));
-    output->setBounds(outputSection.removeFromBottom(output->getHeight()));
+    output.setBounds(outputSection.removeFromBottom(output.getHeight()));
 }

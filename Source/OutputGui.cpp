@@ -11,12 +11,14 @@
 #include "OutputGui.h"
 
 //==============================================================================
-OutputGui::OutputGui(State* state)
-{   
-
-    this->state = state;
-
+OutputGui::OutputGui()
+{
     setSize(100, 540);
+}
+
+void OutputGui::init(State* state)
+{
+    this->state = state;
 
     //Set the slider properties
     gain.setRange(0, 1, 0.0001);

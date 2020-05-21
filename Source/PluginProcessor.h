@@ -14,6 +14,7 @@
 #include "Synth.h"
 
 #include <map>
+#include <memory>
 #include "State.h"
 
 //==============================================================================
@@ -63,7 +64,7 @@ public:
 
 private:
     State state;
-    std::map<int, Synth*> notes;
+    std::map<int, std::unique_ptr<Synth>> notes;
     double sampleRate;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessor)

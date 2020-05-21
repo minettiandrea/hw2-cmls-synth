@@ -13,12 +13,14 @@
 
 
 //==============================================================================
-MixerGui::MixerGui(MixerState* state)
+MixerGui::MixerGui()
 {
-
-    this->state = state;
-
     setSize(125, 540);
+}
+
+void MixerGui::init(MixerState * state)
+{
+    this->state = state;
 
     for (int i = 0; i < 4; i++) {
         //Set all the slider properties

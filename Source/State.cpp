@@ -23,12 +23,14 @@ State::State()
 
 State::~State()
 {
+    DBG("~State");
+    //delete this->output;
     delete this->envelope[0];
     delete this->envelope[1];
     delete this->envelope[2];
     delete this->envelope[3];
     delete this->mixer;
-    delete this->offset;
+    //delete this->offset;
 }
 
 EnvelopeState* State::getEnvelope(int i)
@@ -84,10 +86,11 @@ EnvelopeState::EnvelopeState(std::string id)
 
 EnvelopeState::~EnvelopeState()
 {
-    delete this->attack;
-    delete this->decay;
-    delete this->sustain;
-    delete this->release;
+    DBG("~EnvelopeState");
+    //delete this->attack;
+    //delete this->decay;
+    //delete this->sustain;
+    //delete this->release;
 }
 
 void EnvelopeState::setAttack(float a)
@@ -149,10 +152,11 @@ MixerState::MixerState()
 
 MixerState::~MixerState()
 {
-    delete mix[0];
-    delete mix[1];
-    delete mix[2];
-    delete mix[3];
+    DBG("~MixerState");
+    //delete mix[0];
+    //delete mix[1];
+    //delete mix[2];
+    //delete mix[3];
 }
 
 std::array<AudioParameterFloat*, 4> MixerState::getParameters()
@@ -185,7 +189,7 @@ OffsetState::OffsetState()
 
 OffsetState::~OffsetState()
 {
-    delete free[0];
+    /*delete free[0];
     delete free[1];
     delete free[2];
     delete free[3];
@@ -193,7 +197,7 @@ OffsetState::~OffsetState()
     delete harmonics[1];
     delete harmonics[2];
     delete harmonics[3];
-    delete harmonic;
+    delete harmonic;*/
 }
 
 AudioParameterFloat* OffsetState::getFree(int i)

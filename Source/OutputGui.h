@@ -19,11 +19,12 @@
 class OutputGui    : public Component, private Slider::Listener
 {
 public:
-    OutputGui(State* state);
+    OutputGui();
     ~OutputGui();
 
     void paint (Graphics&) override;
     void resized() override;
+    void init(State* state);
 
 private:
     State* state;

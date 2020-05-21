@@ -21,11 +21,12 @@ using namespace std;
 class MixerGui    : public Component, private Slider::Listener
 {
 public:
-    MixerGui(MixerState* state);
+    MixerGui();
     ~MixerGui();
 
     void paint (Graphics&) override;
     void resized() override;
+    void init(MixerState* state);
 
 
 private:

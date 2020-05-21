@@ -11,16 +11,23 @@
 #include "OffsetGui.h"
 
 //==============================================================================
-OffsetGui::OffsetGui(OffsetState* state)
-{   
+OffsetGui::OffsetGui()
+{
+
+    
+
+    setSize(150, 540);
+
+}
+
+void OffsetGui::init(OffsetState* state)
+{
 
     this->state = state;
 
     //no offset for the first oscillator
     state->setFree(0, 0);
     state->setHarmonics(0, 0);
-
-    setSize(150, 540);
 
     for (int i = 0; i < 3; i++) {
         //Set all the sliders properties

@@ -39,17 +39,17 @@ private:
     // access the processor object that created it.
     AddsynthAudioProcessor& processor;
 
-    MixerGui* mixer;
-    std::array<EnvelopeGui*,4> envelope;
-    OffsetGui* offsets;
-    OutputGui* output;
+    MixerGui mixer;
+    EnvelopeGui envelope[4];
+    OffsetGui offsets;
+    OutputGui output;
 
     Label mixerLabel;
     Label envelopeLabel;
     Label offsetsLabel;
     Label outputLabel;
     
-    CustomLookAndFeel customLookAndFeel;
+    CustomLookAndFeel* customLookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessorEditor)
 };
