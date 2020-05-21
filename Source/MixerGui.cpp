@@ -24,8 +24,8 @@ void MixerGui::init(MixerState * state)
 
     for (int i = 0; i < 4; i++) {
         //Set all the slider properties
-        oscGain[i].setRange(0, 1, 0.0001);
-        oscGain[i].setValue(1);
+        oscGain[i].setRange(0, 0.25, 0.0001);
+        oscGain[i].setValue(0.25);
         oscGain[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
         oscGain[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 

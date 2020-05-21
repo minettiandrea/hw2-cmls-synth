@@ -77,10 +77,10 @@ std::vector<AudioProcessorParameter*> State::getParameters()
 
 EnvelopeState::EnvelopeState(std::string id)
 {
-    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.0f, 1.0f, 0.1f);
-    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.0f, 1.0f, 0.1f);
+    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.001f, 3.0f, 0.1f);
+    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.001f, 3.0f, 0.1f);
     this->sustain   = new AudioParameterFloat(id + "_sustain", id + " Sustain", 0.0f, 1.0f, 1.0f);
-    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.0f, 1.0f, 0.2f);
+    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.001f, 3.0f, 0.1f);
 }
 
 EnvelopeState::~EnvelopeState()
@@ -144,7 +144,7 @@ std::vector<AudioProcessorParameter*> EnvelopeState::getParameters()
 MixerState::MixerState()
 {
     for (int i = 1; i <= 4; i++) {
-        mix[(i-1)] = new AudioParameterFloat("osc"+std::to_string(i)+"_mix", "OSC"+ std::to_string(i) +" Mix", 0.0f, 1.0f, 1.0f);
+        mix[(i-1)] = new AudioParameterFloat("osc"+std::to_string(i)+"_mix", "OSC"+ std::to_string(i) +" Mix", 0.0f, 0.25f, 0.25f);
     }
 }
 

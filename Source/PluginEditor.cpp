@@ -15,7 +15,7 @@
 AddsynthAudioProcessorEditor::AddsynthAudioProcessorEditor (AddsynthAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    //Passing a reference to the processor at each component (except for the envelopes for which is done below)
+    //Initializing the components
     mixer.init(p.getState()->getMixer());
     for (int i = 0; i < 4; i++) {
         envelope[i].init(i,p.getState()->getEnvelope(i));
