@@ -164,7 +164,7 @@ std::array<AudioParameterFloat*, 4> MixerState::getParameters()
 
 void MixerState::set(int i,float v)
 {
-    mix[i]->setValueNotifyingHost(v);
+    mix[i]->setValueNotifyingHost(v / 0.25f);
 }
 
 AudioParameterFloat* MixerState::get(int i)
