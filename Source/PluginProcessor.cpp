@@ -28,6 +28,9 @@ AddsynthAudioProcessor::AddsynthAudioProcessor()
                        )
 #endif
 {
+    for (auto& p : state.getParameters()) {
+        addParameter(p);
+    }
 }
 
 AddsynthAudioProcessor::~AddsynthAudioProcessor()
@@ -169,7 +172,7 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             
             if (notes.count(note) == 0) {
                 DBG("Create new synth for note: " + to_string(m.getNoteNumber()));
-                notes[note] = new Synth();
+                notes[note] = new Synth(&state);
                 notes[note]->initialize(sampleRate);
             }
             notes[note]->setAmplitude(m.getFloatVelocity());
@@ -222,17 +225,9 @@ void AddsynthAudioProcessor::setStateInformation (const void* data, int sizeInBy
     // whose contents will have been created by the getStateInformation() call.
 }
 
-//======================== CUSTOM FUNCTIONS ===============================
-
-
-std::vector<Synth*> AddsynthAudioProcessor::getSynths()
+State* AddsynthAudioProcessor::getState()
 {
-    std::vector<Synth*> synths = std::vector<Synth*>();
-    for (auto& kv : notes) {
-        synths.push_back(kv.second);
-    }
-    return synths;
-
+    return &state;
 }
 
 

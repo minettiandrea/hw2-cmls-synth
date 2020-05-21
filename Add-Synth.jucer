@@ -7,6 +7,10 @@
     <GROUP id="{BC37A9CA-B5E8-EF0B-3423-D369684DB0C6}" name="Source">
       <FILE id="Jt8yxQ" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
       <FILE id="M1st7H" name="State.h" compile="0" resource="0" file="Source/State.h"/>
+      <FILE id="vXFJrK" name="CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/CustomLookAndFeel.cpp"/>
+      <FILE id="gH3c1t" name="CustomLookAndFeel.h" compile="0" resource="0"
+            file="Source/CustomLookAndFeel.h"/>
       <FILE id="d3UmVK" name="MixerGui.cpp" compile="1" resource="0" file="Source/MixerGui.cpp"/>
       <FILE id="Rwudq9" name="MixerGui.h" compile="0" resource="0" file="Source/MixerGui.h"/>
       <FILE id="WIt0NW" name="EnvelopeGui.cpp" compile="1" resource="0" file="Source/EnvelopeGui.cpp"/>

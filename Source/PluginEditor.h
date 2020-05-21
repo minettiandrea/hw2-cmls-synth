@@ -16,7 +16,9 @@
 #include "EnvelopeGui.h"
 #include "OffsetGui.h"
 #include "OutputGui.h"
+#include "CustomLookAndFeel.h"
 #include <string.h>
+#include <memory>
 using namespace std;
 
 //==============================================================================
@@ -37,17 +39,17 @@ private:
     // access the processor object that created it.
     AddsynthAudioProcessor& processor;
 
-    MixerGui mixer;
-    EnvelopeGui envelope[4];
-    OffsetGui offsets;
-    OutputGui output;
+    MixerGui* mixer;
+    std::array<EnvelopeGui*,4> envelope;
+    OffsetGui* offsets;
+    OutputGui* output;
 
     Label mixerLabel;
     Label envelopeLabel;
     Label offsetsLabel;
     Label outputLabel;
-
-    //void sliderValueChanged(Slider* slider) override;
+    
+    CustomLookAndFeel customLookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddsynthAudioProcessorEditor)
 };

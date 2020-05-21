@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "PluginProcessor.h"
+#include "State.h"
 
 //==============================================================================
 /*
@@ -19,17 +19,14 @@
 class OutputGui    : public Component, private Slider::Listener
 {
 public:
-    OutputGui();
+    OutputGui(State* state);
     ~OutputGui();
 
     void paint (Graphics&) override;
     void resized() override;
 
-    //==================CUSTOM METHODS=======================   
-    void setProcessor(AddsynthAudioProcessor* p);
-
 private:
-    AddsynthAudioProcessor* processor;
+    State* state;
 
     Slider gain;
 

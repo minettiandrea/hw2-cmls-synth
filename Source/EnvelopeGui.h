@@ -21,20 +21,17 @@ using namespace std;
 class EnvelopeGui    : public Component, private Slider::Listener
 {
 public:
-    EnvelopeGui();
+    EnvelopeGui(int i, EnvelopeState* state);
     ~EnvelopeGui();
 
     void paint (Graphics&) override;
     void resized() override;
     
-    //==============CUSTOM METHODS=================
-    void setProcessor(AddsynthAudioProcessor* p);
-    void setId(int id);
 
 private:
+    EnvelopeState* state;
     AddsynthAudioProcessor* processor;
 
-    int oscId;
     Label oscIdLabel;
     Slider envParam[4];
     Label paramLabel[4];

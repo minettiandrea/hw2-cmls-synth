@@ -14,6 +14,7 @@
 #include "Synth.h"
 
 #include <map>
+#include "State.h"
 
 //==============================================================================
 /**
@@ -58,10 +59,10 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    //======================= CUSTOM FUNCTIONS ======================================
-    std::vector<Synth*> getSynths();
+    State* getState();
 
 private:
+    State state;
     std::map<int, Synth*> notes;
     double sampleRate;
     //==============================================================================

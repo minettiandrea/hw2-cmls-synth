@@ -12,16 +12,16 @@
 #include "Oscillator.h"
 #include <cmath>
 
-void Oscillator::setFundamental(double frequencyValue)
+void Oscillator::setFundamental(float frequencyValue)
 {
 	fundamental = frequencyValue;
-	refreshFrequency();
 }
 
-void Oscillator::setFrequencyOffset(double offsetValue)
+void Oscillator::setFrequencyOffset(AudioParameterFloat* freeOffset, AudioParameterFloat* harmonicOffset, AudioParameterBool* isHarmonic)
 {
-	frequencyOffset = offsetValue;
-	refreshFrequency();
+	this->freeOffset = freeOffset;
+	this->harmonicOffset = harmonicOffset;
+	this->isHarmonic = isHarmonic;
 }
 
 void Oscillator::setPhase(double phaseValue)
@@ -33,7 +33,7 @@ void Oscillator::setSampleRate(double sampleRateValue) {
 	sampleRate = sampleRateValue;
 }
 
-void Oscillator::setGain(double gainValue)
+void Oscillator::setGain(AudioParameterFloat* gainValue)
 {
 	gain = gainValue;
 }
@@ -41,11 +41,14 @@ void Oscillator::setGain(double gainValue)
 void Oscillator::setAmplitude(float amplitude)
 {
 	DBG("Oscillator::setAmplitude: " + std::to_string(amplitude));
+	DBG("Oscillator::gain: " + std::to_string(this->gain->get()));
 	this->amplitude = amplitude;
 }
 
 void Oscillator::setEnvelopeParameters(double attack, double decay, double sustain, double release)
 {
+
+	DBG("Oscillator::setEnvelopePArameters");
 	envelopeParameters.attack = attack;
 	envelopeParameters.decay = decay;
 	envelopeParameters.sustain = sustain;
@@ -54,33 +57,18 @@ void Oscillator::setEnvelopeParameters(double attack, double decay, double susta
 	envelope.setParameters(envelopeParameters);
 }
 
-double Oscillator::getFrequency()
-{
-	return frequency;
-}
-
-double Oscillator::getPhase()
-{
-	return phase;
-}
-
 //Return the sine wave (gets called for each sample)
-double Oscillator::getBlockSineWave(){
-	double wave = gain*envelope.getNextSample()*(double)sin((double)phase)*amplitude;
-
-	phase += (double)(M_PI * 2. * (frequency / sampleRate));
-	if (phase > M_PI * 2.) phase -= M_PI * 2.;
+float Oscillator::getBlockSineWave(){
+	float wave = this->gain->get()*envelope.getNextSample()*sin(phase)*amplitude;
+	phase += (M_PI * 2.0f * ((this->fundamental + this->offset()) / (float) sampleRate));
+	if (phase > M_PI * 2.0f) phase -= M_PI * 2.0f;
 
 	return wave;
 }
 
-double Oscillator::getGain()
-{
-	return gain;
-}
-
 void Oscillator::play()
 {
+	DBG("offset" + std::to_string(this->offset()));
 	envelope.noteOn();
 }
 
@@ -89,24 +77,27 @@ void Oscillator::stop()
 	envelope.noteOff();
 }
 
-void Oscillator::init(double sr, double freq)
+void Oscillator::init(double sr)
 {
-	stop();
-	fundamental = freq;
-	frequencyOffset = 0;
-	refreshFrequency();
-	phase = 0;
+	phase = 0.0f;
 	sampleRate = sr;
-	gain = 1;
-	amplitude = 0.5;
 	envelope.setSampleRate(sr);
-	setEnvelopeParameters(0.1, 0.1, 1, 0.2);
 }
 
-void Oscillator::refreshFrequency()
+float Oscillator::offset()
 {
-	frequency = fundamental + frequencyOffset;
+
+	float result;
+	if (this->isHarmonic->get()) {
+		result = this->fundamental * this->harmonicOffset->get();
+	}
+	else {
+		result = this->freeOffset->get();
+	}
+	//DBG("offset" + std::to_string(result));
+	return result;
 }
+
 
 
 

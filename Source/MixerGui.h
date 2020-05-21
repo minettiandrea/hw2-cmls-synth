@@ -11,8 +11,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "PluginProcessor.h"
 #include <string.h>
+#include "State.h"
 using namespace std;
 
 //==============================================================================
@@ -21,17 +21,15 @@ using namespace std;
 class MixerGui    : public Component, private Slider::Listener
 {
 public:
-    MixerGui();
+    MixerGui(MixerState* state);
     ~MixerGui();
 
     void paint (Graphics&) override;
     void resized() override;
 
-    //==================CUSTOM METHODS=======================   
-    void setProcessor(AddsynthAudioProcessor* p);
 
 private:
-    AddsynthAudioProcessor* processor;
+    MixerState* state;
 
     Slider oscGain[4];
     Label oscGainLabel[4];

@@ -10,9 +10,14 @@
 
 #include "Synth.h"
 
-Synth::Synth()
+Synth::Synth(State* state)
 {
-    this->oscillators = { &mainOsc,&secondaryOsc[0],&secondaryOsc[1],&secondaryOsc[2] };
+    this->state = state;
+    for (int i = 0; i < 4; i++) {
+        oscillators[i] = std::make_unique<Oscillator>();
+        oscillators[i]->setGain(state->getMixer()->get(i));
+        oscillators[i]->setFrequencyOffset(state->getOffset()->getFree(i), state->getOffset()->getHarmonics(i), state->getOffset()->isHarmonic());
+    }
 }
 
 int Synth::numOscillators()
@@ -20,35 +25,13 @@ int Synth::numOscillators()
     return nOsc;
 }
 
-double Synth::getOutputGain()
-{
-	return outputGain;
-}
 
-void Synth::setOutputGain(double gainValue)
-{
-    outputGain = gainValue;
-}
 
-void Synth::setOscGain(int osc_id, double gain)
-{
-    oscillators[osc_id]->setGain(gain);
-}
-
-void Synth::setOscEnvelope(int osc_id, double a, double d, double s, double r)
-{
-    oscillators[osc_id]->setEnvelopeParameters(a, d, s, r);
-}
-
-void Synth::setOscOffset(int osc_id, double offset)
-{
-    oscillators[osc_id]->setFrequencyOffset(offset);
-}
 
 //Set the frequency of the oscillator (the offset get applied in the setFrequency method)
 void Synth::setFoundamentalFrequency(double freq)
 {
-    for (auto osc : oscillators) {
+    for (auto &osc : oscillators) {
         osc->setFundamental(freq);
     }
 }
@@ -56,7 +39,7 @@ void Synth::setFoundamentalFrequency(double freq)
 void Synth::setAmplitude(float amp)
 {
     DBG("Synth::setAmplitude: " + std::to_string(amp));
-    for (auto osc : oscillators) {
+    for (auto &osc : oscillators) {
         osc->setAmplitude(amp);
     }
 }
@@ -68,22 +51,22 @@ void Synth::setAmplitude(float amp)
 //Output Gain: 0.5
 void Synth::initialize(double sampleRate)
 {
-    mainOsc.init(sampleRate, 440);
-
-    for (auto osc : oscillators) {
-        osc->init(sampleRate, 440);
+    for (auto &osc : oscillators) {
+        osc->init(sampleRate);
     }
 
-    outputGain = 0.5;
 }
 
 //Process the sound for all the samples in buffer
 void Synth::process(float*& channelDataL, float*& channelDataR, int samples)
 {
 
-
     for (int i = 0; i < samples; ++i) {
-        auto synthChannelData = outputGain * (mainOsc.getBlockSineWave() + secondaryOsc[0].getBlockSineWave() + secondaryOsc[1].getBlockSineWave() + secondaryOsc[2].getBlockSineWave());
+        float channelData = 0.0f;
+        for (auto &o : oscillators) {
+            channelData += o->getBlockSineWave();
+        }
+        auto synthChannelData = this->state->getOutput()->get() * channelData;
         channelDataL[i] = channelDataL[i] + synthChannelData;
         channelDataR[i] = channelDataR[i] + synthChannelData;
     }
@@ -92,14 +75,23 @@ void Synth::process(float*& channelDataL, float*& channelDataR, int samples)
 //Set values of the played note
 void Synth::startNote()
 {
-    for (auto osc : oscillators) {
-        osc->play();
+
+    DBG("Synth::startNote()");
+    DBG("Synth::attack" + std::to_string(state->getEnvelope(0)->getAttack()->get()));
+    for (int i = 0; i < 4; i++) {
+        oscillators[i]->setEnvelopeParameters(
+            state->getEnvelope(i)->getAttack()->get(),
+            state->getEnvelope(i)->getDecay()->get(),
+            state->getEnvelope(i)->getSustain()->get(),
+            state->getEnvelope(i)->getRelease()->get()
+           );
+        oscillators[i]->play();
     }
 }
 
 void Synth::stopNote()
 {
-    for (auto osc : oscillators) {
+    for (auto &osc : oscillators) {
         osc->stop();
     }
 }

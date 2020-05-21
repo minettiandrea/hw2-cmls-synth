@@ -11,32 +11,70 @@
 #include "OffsetGui.h"
 
 //==============================================================================
-OffsetGui::OffsetGui()
-{
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-    
+OffsetGui::OffsetGui(OffsetState* state)
+{   
+
+    this->state = state;
+
+    //no offset for the first oscillator
+    state->setFree(0, 0);
+    state->setHarmonics(0, 0);
+
     setSize(150, 540);
 
     for (int i = 0; i < 3; i++) {
         //Set all the sliders properties
-        oscOffset[i].setRange(0, 1000, 0.0001);
-        oscOffset[i].setValue(0);
-        oscOffset[i].setSliderStyle(Slider::Rotary);
-        oscOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+        freeOffset[i].setRange(0, 1000, 0.0001);
+        freeOffset[i].setValue(0);
+        freeOffset[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+        freeOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+        
+
+        harmonicOffset[i].setRange(0, 10, 1);
+        harmonicOffset[i].setValue(0);
+        harmonicOffset[i].setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+        harmonicOffset[i].setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 
         //Add the listener
-        oscOffset[i].addListener(this);
+        freeOffset[i].addListener(this);
+        harmonicOffset[i].addListener(this);
         
-        //Name the label, center it and attach it to the corresponding slider
-        oscOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
-        oscOffsetLabel[i].setJustificationType(Justification(36));
-        oscOffsetLabel[i].attachToComponent(&oscOffset[i], false);
+        //Name the labels, set the font, center it and attach it to the corresponding slider
+        freeOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
+        freeOffsetLabel[i].setFont(Font(16.0f));
+        freeOffsetLabel[i].setJustificationType(Justification(36));
+        freeOffsetLabel[i].attachToComponent(&freeOffset[i], false);
+        
+        harmonicOffsetLabel[i].setText("OSC " + to_string(i + 2), dontSendNotification);
+        harmonicOffsetLabel[i].setFont(Font(16.0f));
+        harmonicOffsetLabel[i].setJustificationType(Justification(36));
+        harmonicOffsetLabel[i].attachToComponent(&harmonicOffset[i], false);
 
         //Make slider and label visible
-        addAndMakeVisible(oscOffset[i]);
-        addAndMakeVisible(oscOffsetLabel[i]);
+        addAndMakeVisible(freeOffset[i]);
+        addAndMakeVisible(freeOffsetLabel[i]);
+        
+        addAndMakeVisible(harmonicOffset[i]);
+        addAndMakeVisible(harmonicOffsetLabel[i]);
+        
+        //Hide the HARMONIC offset slider (default view is on FREE)
+        harmonicOffset[i].setVisible(false);
+        harmonicOffsetLabel[i].setVisible(false);
     }
+    
+    for (auto& button : offsetType) {
+        //Make the buttons toggle, add them to the same radio group and link the onClick function
+        button.setClickingTogglesState(true);
+        button.setRadioGroupId(1, dontSendNotification);
+        button.onClick = [this] {changeView();};
+        addAndMakeVisible(button);
+    }
+
+    offsetType[0].setButtonText("FREE");
+    offsetType[1].setButtonText("HARMONIC");
+
+    //Set the FREE button as default
+    offsetType[0].setToggleState(true, dontSendNotification);
 
 }
 
@@ -46,36 +84,49 @@ OffsetGui::~OffsetGui()
 
 void OffsetGui::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+    //Set background color
+    g.fillAll(Colours::black.brighter(0.2));  
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
+    //Draw the outline
+    g.setColour(Colours::black.brighter(0.1));
+    g.drawRect (getLocalBounds(), 1.5);  
 }
 
 void OffsetGui::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
+    //Create 2 FlexBox layout (one for FREE configuration and one for HARMONIC configuration)
+    FlexBox freeLayout;
+    FlexBox harmonicLayout;
+
+    freeLayout.flexDirection = FlexBox::Direction::column;
+    freeLayout.justifyContent = FlexBox::JustifyContent::center;
+    freeLayout.alignContent = FlexBox::AlignContent::center;
+
+    harmonicLayout.flexDirection = FlexBox::Direction::column;
+    harmonicLayout.justifyContent = FlexBox::JustifyContent::center;
+    harmonicLayout.alignContent = FlexBox::AlignContent::center;
+
+    //Add the sliders to the respective layout
+    for (auto& element : freeOffset) {
+        freeLayout.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 30, 0)).withFlex(1, 1));
+    }
     
-    //Insert all the elements in a FlexBox in order to have them displayed more ordered
-    FlexBox container;
-
-    container.flexDirection = FlexBox::Direction::column;
-    container.justifyContent = FlexBox::JustifyContent::center;
-
-    for (auto& element : oscOffset) {
-        container.items.add(FlexItem(element).withMargin(FlexItem::Margin(50, 0, 30, 0)).withFlex(1, 1));
+    for (auto& element : harmonicOffset) {
+        harmonicLayout.items.add(FlexItem(element).withMargin(FlexItem::Margin(40, 0, 30, 0)).withFlex(1, 1));
+    }
+    
+    //Add the buttons to both layouts
+    for (auto& button : offsetType) {
+        freeLayout.items.add(FlexItem(button).withMargin(FlexItem::Margin(0, 0, 15, 0)).withMaxHeight(30).withWidth(100).withFlex(1, 1));
     }
 
-    container.performLayout(getBounds().toFloat());
+    for (auto& button : offsetType) {
+        harmonicLayout.items.add(FlexItem(button).withMargin(FlexItem::Margin(0, 0, 15, 0)).withMaxHeight(30).withWidth(100).withFlex(1, 1));
+    }
+
+    //Perform both layouts (they will be visible one at a time)
+    freeLayout.performLayout(getBounds().toFloat());
+    harmonicLayout.performLayout(getBounds().toFloat());
 
 }
 
@@ -83,10 +134,11 @@ void OffsetGui::resized()
 void OffsetGui::sliderValueChanged(Slider* slider)
 {
     for (int i = 0; i < 3; i++) {
-        if (slider == &oscOffset[i]) {
-            for (auto& synth : processor->getSynths()) {
-                synth->setOscOffset(i + 1, oscOffset[i].getValue());
-            }
+        if (slider == &freeOffset[i]) {
+            state->setFree(i + 1,freeOffset[i].getValue());
+        }
+        else if (slider == &harmonicOffset[i]) {
+            state->setHarmonics(i + 1, harmonicOffset[i].getValue());
         }
     }
 
@@ -94,8 +146,38 @@ void OffsetGui::sliderValueChanged(Slider* slider)
 
 //=============================CUSTOM METHODS===========================
 
-//Set the reference to the processor in order to perform the operations
-void OffsetGui::setProcessor(AddsynthAudioProcessor* p)
-{
-    processor = p;
+
+void OffsetGui::changeView()
+{    
+    for (int i = 0; i < 3; i++) {
+        if (offsetType[0].getToggleState()) {
+
+            //Set the offset view to FREE
+            harmonicOffset[i].setVisible(false);
+            harmonicOffsetLabel[i].setVisible(false);
+
+            freeOffset[i].setVisible(true);
+            freeOffsetLabel[i].setVisible(true);
+
+            //Set the oscillators offsets
+            
+            state->setHarmonic(false);
+            state->setFree(i + 1, freeOffset[i].getValue());
+            
+        }
+        else if (offsetType[1].getToggleState()) {
+            //set the offset view to HARMONIC
+            freeOffset[i].setVisible(false);
+            freeOffsetLabel[i].setVisible(false);
+
+            harmonicOffset[i].setVisible(true);
+            harmonicOffsetLabel[i].setVisible(true);
+
+            state->setHarmonic(true);
+            state->setHarmonics(i + 1, harmonicOffset[i].getValue());
+            
+        }
+    }
+
 }
+

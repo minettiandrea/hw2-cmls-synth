@@ -11,17 +11,14 @@
 #pragma once
 #include "Oscillator.h"
 #include <array>
+#include <memory>
+#include "State.h"
 
 class Synth {
 public:
 
-    Synth();
+    Synth(State* state);
     int numOscillators();
-    double getOutputGain();
-    void setOutputGain(double gainValue);
-    void setOscGain(int osc_id, double gain);
-    void setOscEnvelope(int osc_id, double a, double d, double s, double r);
-    void setOscOffset(int osc_id, double offset);
     void setFoundamentalFrequency(double freq);
     void setAmplitude(float amp);
     void initialize(double sampleRate);
@@ -30,9 +27,7 @@ public:
     void stopNote();
 
 private:
+    State* state;
     int nOsc = 4;
-    Oscillator mainOsc;
-    Oscillator secondaryOsc[3];
-    std::array<Oscillator*, 4> oscillators;
-    double outputGain;          //Main output volume controlled by the GUI. Can be any value in the range 0:1
+    std::array<std::unique_ptr<Oscillator>, 4> oscillators;
 };
