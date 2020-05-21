@@ -77,10 +77,10 @@ std::vector<AudioProcessorParameter*> State::getParameters()
 
 EnvelopeState::EnvelopeState(std::string id)
 {
-    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.0f, 1.0f, 0.1f);
-    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.0f, 1.0f, 0.1f);
-    this->sustain   = new AudioParameterFloat(id + "_sustain", id + " Sustain", 0.0f, 1.0f, 1.0f);
-    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.0f, 1.0f, 0.2f);
+    this->attack    = new AudioParameterFloat(id + "_attack", id + " Attack", 0.0f, 5.0f, 0.1f);
+    this->decay     = new AudioParameterFloat(id + "_decay", id + " Decay", 0.0f, 5.0f, 0.1f);
+    this->sustain   = new AudioParameterFloat(id + "_sustain", id + " Sustain", 0.0f, 5.0f, 1.0f);
+    this->release   = new AudioParameterFloat(id + "_release", id + " Release", 0.0f, 5.0f, 0.2f);
 }
 
 EnvelopeState::~EnvelopeState()
@@ -93,22 +93,22 @@ EnvelopeState::~EnvelopeState()
 
 void EnvelopeState::setAttack(float a)
 {
-    this->attack->setValueNotifyingHost(a);
+    this->attack->setValueNotifyingHost(a / 5);
 }
 
 void EnvelopeState::setDecay(float d)
 {
-    this->decay->setValueNotifyingHost(d);
+    this->decay->setValueNotifyingHost(d / 5);
 }
 
 void EnvelopeState::setSustain(float s)
 {
-    this->decay->setValueNotifyingHost(s);
+    this->sustain->setValueNotifyingHost(s / 5);
 }
 
 void EnvelopeState::setRelease(float r)
 {
-    this->decay->setValueNotifyingHost(r);
+    this->release->setValueNotifyingHost(r / 5);
 }
 
 AudioParameterFloat* EnvelopeState::getAttack()

@@ -161,11 +161,11 @@ void AddsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     MidiMessage m;
     int time;
     for (MidiBuffer::Iterator i(midiMessages); i.getNextEvent(m, time);) {
-        DBG(m.getDescription() + " Note:" +  to_string(m.getNoteNumber()));
+        //DBG(m.getDescription() + " Note:" +  to_string(m.getNoteNumber()));
         int note = m.getNoteNumber();
         if (m.isPitchWheel()) {
             for (auto& kv : notes) {
-                kv.second->setFoundamentalFrequency(m.getMidiNoteInHertz(kv.first) + (double)m.getPitchWheelValue() / 16384.0);
+                kv.second->setFoundamentalFrequency(m.getMidiNoteInHertz(kv.first) + ((double)m.getPitchWheelValue() / 16384.0 - 0.5) * m.getMidiNoteInHertz(kv.first) * 0.5);
             }
         } else if (m.isNoteOn()) {
             

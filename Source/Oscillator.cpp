@@ -8,9 +8,7 @@
   ==============================================================================
 */
 
-#define _USE_MATH_DEFINES
 #include "Oscillator.h"
-#include <cmath>
 
 void Oscillator::setFundamental(float frequencyValue)
 {
@@ -45,6 +43,9 @@ void Oscillator::setAmplitude(float amplitude)
 
 void Oscillator::setEnvelopeParameters(double attack, double decay, double sustain, double release)
 {
+
+	//DBG("A: " + std::to_string(attack) + "D:" + std::to_string(decay) + " S:" + std::to_string(sustain) + " R:" + std::to_string(release));
+
 	envelopeParameters.attack = attack;
 	envelopeParameters.decay = decay;
 	envelopeParameters.sustain = sustain;
@@ -55,9 +56,9 @@ void Oscillator::setEnvelopeParameters(double attack, double decay, double susta
 
 //Return the sine wave (gets called for each sample)
 float Oscillator::getBlockSineWave(){
-	float wave = this->gain->get()*envelope.getNextSample()*sin(phase)*amplitude;
-	phase += (M_PI * 2.0f * ((this->fundamental + this->offset()) / (float) sampleRate));
-	if (phase > M_PI * 2.0f) phase -= M_PI * 2.0f;
+	float wave = this->gain->get()*envelope.getNextSample()*std::sin(phase)*amplitude;
+	phase += (MathConstants<float>::pi * 2.0f * ((this->fundamental + this->offset()) / (float) sampleRate));
+	if (phase > MathConstants<float>::pi * 2.0f) phase -= MathConstants<float>::pi * 2.0f;
 
 	return wave;
 }
