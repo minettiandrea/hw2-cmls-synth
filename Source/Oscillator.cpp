@@ -40,15 +40,11 @@ void Oscillator::setGain(AudioParameterFloat* gainValue)
 
 void Oscillator::setAmplitude(float amplitude)
 {
-	DBG("Oscillator::setAmplitude: " + std::to_string(amplitude));
-	DBG("Oscillator::gain: " + std::to_string(this->gain->get()));
 	this->amplitude = amplitude;
 }
 
 void Oscillator::setEnvelopeParameters(double attack, double decay, double sustain, double release)
 {
-
-	DBG("Oscillator::setEnvelopePArameters");
 	envelopeParameters.attack = attack;
 	envelopeParameters.decay = decay;
 	envelopeParameters.sustain = sustain;
@@ -68,7 +64,6 @@ float Oscillator::getBlockSineWave(){
 
 void Oscillator::play()
 {
-	DBG("offset" + std::to_string(this->offset()));
 	envelope.noteOn();
 }
 
@@ -94,7 +89,6 @@ float Oscillator::offset()
 	else {
 		result = this->freeOffset->get();
 	}
-	//DBG("offset" + std::to_string(result));
 	return result;
 }
 

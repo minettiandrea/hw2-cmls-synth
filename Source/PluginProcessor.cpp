@@ -35,7 +35,6 @@ AddsynthAudioProcessor::AddsynthAudioProcessor()
 
 AddsynthAudioProcessor::~AddsynthAudioProcessor()
 {
-    DBG("~AddsynthAudioProcessor");
 }
 
 //==============================================================================
@@ -106,7 +105,6 @@ void AddsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     
-    DBG("Add-Synth START");
     notes.clear();
     this->sampleRate = sampleRate;
 }

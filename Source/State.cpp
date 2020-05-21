@@ -23,7 +23,6 @@ State::State()
 
 State::~State()
 {
-    DBG("~State");
     //delete this->output;
     delete this->envelope[0];
     delete this->envelope[1];
@@ -86,7 +85,6 @@ EnvelopeState::EnvelopeState(std::string id)
 
 EnvelopeState::~EnvelopeState()
 {
-    DBG("~EnvelopeState");
     //delete this->attack;
     //delete this->decay;
     //delete this->sustain;
@@ -152,7 +150,6 @@ MixerState::MixerState()
 
 MixerState::~MixerState()
 {
-    DBG("~MixerState");
     //delete mix[0];
     //delete mix[1];
     //delete mix[2];
@@ -166,9 +163,7 @@ std::array<AudioParameterFloat*, 4> MixerState::getParameters()
 
 void MixerState::set(int i,float v)
 {
-    DBG("Changed free offset state to:" + std::to_string(v));
     mix[i]->setValueNotifyingHost(v);
-    DBG("Reading offset state:" + std::to_string(mix[i]->get()));
 }
 
 AudioParameterFloat* MixerState::get(int i)

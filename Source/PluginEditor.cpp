@@ -61,7 +61,6 @@ AddsynthAudioProcessorEditor::~AddsynthAudioProcessorEditor()
 {
     setLookAndFeel(nullptr);
     delete customLookAndFeel;
-    DBG("~AddsynthAudioProcessorEditor");
 }
 
 //==============================================================================

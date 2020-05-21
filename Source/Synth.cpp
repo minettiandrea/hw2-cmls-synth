@@ -38,7 +38,6 @@ void Synth::setFoundamentalFrequency(double freq)
 
 void Synth::setAmplitude(float amp)
 {
-    DBG("Synth::setAmplitude: " + std::to_string(amp));
     for (auto &osc : oscillators) {
         osc->setAmplitude(amp);
     }
@@ -75,9 +74,6 @@ void Synth::process(float*& channelDataL, float*& channelDataR, int samples)
 //Set values of the played note
 void Synth::startNote()
 {
-
-    DBG("Synth::startNote()");
-    DBG("Synth::attack" + std::to_string(state->getEnvelope(0)->getAttack()->get()));
     for (int i = 0; i < 4; i++) {
         oscillators[i]->setEnvelopeParameters(
             state->getEnvelope(i)->getAttack()->get(),
