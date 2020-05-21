@@ -5,20 +5,20 @@
               pluginManufacturer="CMLS Group 18">
   <MAINGROUP id="rLU8mT" name="Add-Synth">
     <GROUP id="{BC37A9CA-B5E8-EF0B-3423-D369684DB0C6}" name="Source">
-      <FILE id="Jt8yxQ" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
-      <FILE id="M1st7H" name="State.h" compile="0" resource="0" file="Source/State.h"/>
-      <FILE id="vXFJrK" name="CustomLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/CustomLookAndFeel.cpp"/>
-      <FILE id="gH3c1t" name="CustomLookAndFeel.h" compile="0" resource="0"
-            file="Source/CustomLookAndFeel.h"/>
-      <FILE id="d3UmVK" name="MixerGui.cpp" compile="1" resource="0" file="Source/MixerGui.cpp"/>
-      <FILE id="Rwudq9" name="MixerGui.h" compile="0" resource="0" file="Source/MixerGui.h"/>
       <FILE id="WIt0NW" name="EnvelopeGui.cpp" compile="1" resource="0" file="Source/EnvelopeGui.cpp"/>
       <FILE id="aa3Pv0" name="EnvelopeGui.h" compile="0" resource="0" file="Source/EnvelopeGui.h"/>
       <FILE id="SqODFm" name="OffsetGui.cpp" compile="1" resource="0" file="Source/OffsetGui.cpp"/>
       <FILE id="dZnllF" name="OffsetGui.h" compile="0" resource="0" file="Source/OffsetGui.h"/>
       <FILE id="ZKqnEQ" name="OutputGui.cpp" compile="1" resource="0" file="Source/OutputGui.cpp"/>
       <FILE id="q03BOJ" name="OutputGui.h" compile="0" resource="0" file="Source/OutputGui.h"/>
+      <FILE id="d3UmVK" name="MixerGui.cpp" compile="1" resource="0" file="Source/MixerGui.cpp"/>
+      <FILE id="Rwudq9" name="MixerGui.h" compile="0" resource="0" file="Source/MixerGui.h"/>
+      <FILE id="vXFJrK" name="CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/CustomLookAndFeel.cpp"/>
+      <FILE id="gH3c1t" name="CustomLookAndFeel.h" compile="0" resource="0"
+            file="Source/CustomLookAndFeel.h"/>
+      <FILE id="Jt8yxQ" name="State.cpp" compile="1" resource="0" file="Source/State.cpp"/>
+      <FILE id="M1st7H" name="State.h" compile="0" resource="0" file="Source/State.h"/>
       <FILE id="vMRZ3a" name="Synth.cpp" compile="1" resource="0" file="Source/Synth.cpp"/>
       <FILE id="lgUyjY" name="Synth.h" compile="0" resource="0" file="Source/Synth.h"/>
       <FILE id="tv8IZM" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
